@@ -1,25 +1,3 @@
-var hs;
-
-function setup() {
-  createCanvas(500,500);
-  hs=new HarmScore(100,100,300);
-}
-
-function draw() {
-  background(40);
-  hs.show();
-  hs.run();
-}
-
-function mousePressed(){
-  var scores=[];
-  for(var i=0; i<5; i++){
-    scores.push(floor(random(2)));
-  }
-  console.log(scores);
-  hs.update(scores);
-}
-
 function HarmScore(x,y,w){
   var s=0.5*0.5;
   var positions=[
