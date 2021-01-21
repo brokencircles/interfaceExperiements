@@ -12,6 +12,13 @@ function ProductViewer(x,y,w,h){
   maskG.rect(x+w*1.1,0,w*0.1,height);
   var cover=maskG.get();
 
+  this.loadProducts=function(prodData){
+    products=[];
+    for(var i=0; i<prodData.length; i++){
+      this.addProduct(200,prodData[i]);
+    }
+  };
+
   this.matchProduct=function(scores){
     var rms=[];
     var lowRmsVal=1000;
@@ -52,7 +59,7 @@ function ProductViewer(x,y,w,h){
   this.selectProduct=function(sel){
     currentProduct=sel;
     targetOffset=(sel*w);
-    console.log(products[currentProduct].productData);
+    // console.log(products[currentProduct].productData);
   };
 
   this.run=function(){
@@ -71,6 +78,16 @@ function ProductViewer(x,y,w,h){
     rect(x,y+h,w,height);
     rect(x-w*0.1,0,w*0.1,height);
     rect(x+w*1,0,w*0.1,height);
+    push();
+    translate(x+w/2,y-h*0.1);
+    textAlign(CENTER,CENTER);
+    fill(255);
+    noStroke();
+    // stroke(255,200);
+    // strokeWeight(1);
+    textSize(w*0.125);
+    text('products',0,0);
+    pop();
   }
 
   function Product(s,pData){

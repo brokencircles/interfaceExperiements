@@ -31,6 +31,16 @@ function SlidePanel(x,y,w,h,n){
       slider.run(mx, my);
       slider.show();
     });
+    push();
+    translate(x+w/2,y-h*0.1);
+    textAlign(CENTER,CENTER);
+    fill(255);
+    noStroke();
+    // stroke(255,200);
+    // strokeWeight(1);
+    textSize(w*0.125);
+    text('preferences',0,0);
+    pop();
   };
 }
 

@@ -5,7 +5,7 @@ function Body(x,y,r,n){
   var prevSel=0;
 
   for(var i=0; i<n; i++){
-    segs.push(new Seg(x,y,r,-PI+i*TWO_PI/n,-PI+(i+1)*TWO_PI/n));
+    segs.push(new Seg(x,y,r,-PI+i*TWO_PI/n,-PI+(i+1)*TWO_PI/n,i));
   }
   segs[0].selected=true;
 
@@ -27,11 +27,12 @@ function Body(x,y,r,n){
     return res;
   }
 
-  function Seg(x,y,r,as,ae){
+  function Seg(x,y,r,as,ae,index){
     var hover=false;
     this.selected=false;
     var scl=1;
     var maxScl=1.2;
+    var cHue=30+i*90;
 
     this.run=function(mx,my){
       var a=atan2(my-y, mx-x);
@@ -58,12 +59,27 @@ function Body(x,y,r,n){
       push();
       translate(x,y);
       scale(scl);
-      fill(hover?200:120);
+      colorMode(HSB);
+      fill(0,0,50);
+      if(hover){
+        fill(0,0,80);
+      }
+      // fill(hover?200:120);
       if(this.selected){
-        fill(200,100,0);
+        fill(cHue,70,70);
       }
       noStroke();
       arc(0,0,r*2,r*2,as,ae);
+      colorMode(RGB);
+      pop();
+      push();
+      translate(x,y);
+      textAlign(CENTER,CENTER);
+      fill(0);
+      stroke(255);
+      strokeWeight(1);
+      textSize(r*0.25);
+      text('body',0,0);
       pop();
     };
   }

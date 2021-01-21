@@ -34,11 +34,21 @@ function HarmScore(x,y,w){
       translate(positions[i].x*w, positions[i].y*w);
       fill(80);
       ellipse(0,0,(s+0.1)*w);
-      fill(150+100*currentScores[i]);
+      fill(255,255-200*currentScores[i],255-200*currentScores[i]);
       noStroke();
       ellipse(0,0,w*(0.05+s)*currentScores[i]);
       pop();
     }
+    pop();
+    push();
+    translate(x+w/2,y-w*0.1);
+    textAlign(CENTER,CENTER);
+    fill(255);
+    noStroke();
+    // stroke(255,200);
+    // strokeWeight(1);
+    textSize(w*0.125);
+    text('harms',0,0);
     pop();
   };
 }
