@@ -1,19 +1,24 @@
 var ground;
+var grab;
 
 function setup() {
   createCanvas(500,500);
   colorMode(HSB);
-  ground=new Ground(100,100,300,100);
+  ground=new Ground(100,400,300,100);
+  grab=new Grab(250,100,100,300,100);
 }
 
 function draw() {
   background(0,0,20);
   ground.run(mouseY/height);
   ground.show();
+  grab.run();
+  grab.show();
 }
 
 function mousePressed(){
   ground.grab();
+  grab.grab();
 }
 
 function Ground(x,y,w,h){
@@ -60,4 +65,53 @@ function Ground(x,y,w,h){
     endShape(CLOSE);
     pop();
   };
+}
+
+function Grab(x,y,s,vDisp,vDispPlus){
+  var open=1;
+  var down=0;
+  var disp=vDisp;
+  var nowPos=0;
+  var aG=0;
+  var aGRot=PI/100;
+  var grabbing=false;
+  var grabDrive=0;
+  var posDrive=0;
+
+  this.grab=function(){
+    grabbing=true;
+  };
+
+  this.run=function(){
+    posDrive=(-cos(aG)*0.5+0.5);
+    nowPos=posDrive*vDisp;
+    if(grabbing){
+      // nowPos=(-cos(aG)*0.5+1)*vDisp;
+      if(aG<TWO_PI){
+        aG+=aGRot;
+      } else {
+        aG=0;
+        grabbing=false;
+      }
+    }
+    grabDrive=constrain(posDrive-0.75,0,1)/0.25;
+    // console.log(nf(grabDrive,1,2));
+  };
+
+  this.show=function(){
+    push();
+    translate(x,y);
+    noStroke();
+    fill(0,0,100);
+    rectMode(CORNER);
+    rect(-s/4,-vDisp+nowPos,s/2,vDisp,s/2);
+    translate(0,nowPos);
+    rotate(-PI*0.3*grabDrive);
+    // rect(0,0,s,s);
+    arc(0,0,s*2,s*2,0,PI/2);
+    rotate(2*PI*0.3*grabDrive);
+    // rect(0,0,-s,s);
+    arc(0,0,s*2,s*2,PI/2,PI);
+    pop();
+  }
 }
