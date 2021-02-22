@@ -11,9 +11,15 @@ var space;
 
 var context=SELECTOR;
 var selector, solution;
+var loadedData;
+
+function preload(){
+  loadedData=loadJSON('data.json');
+}
 
 function setup() {
   createCanvas(500,500);
+  console.log(loadedData);
   colorMode(HSB);
   space={
     x:0,
