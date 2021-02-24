@@ -55,6 +55,7 @@ function draw() {
   //   solution.show(FULL);
   // }
   background(40);
+  explorer.run();
   explorer.show();
 }
 
@@ -68,6 +69,11 @@ function mousePressed(){
   explorer.click();
 }
 
+function transform(scalar,origin,scl){
+  // console.log(scalar,(scalar-width/2)/scl+width/2);
+  return (scalar-origin)*scl+origin;
+}
+
 function Explorer(x,y,s){
   var n=3;
   var offsetA=-PI*0.25;
@@ -75,74 +81,197 @@ function Explorer(x,y,s){
   var currentOffset=createVector(0,0);
   var targetOffset=createVector(0,0);
   var currentA=0;
+  var targetA=0;
   var rot=0;//PI/500;
   var currentScale=1;
+  var targetScale=1;
   var productOptions=[];
   var aStep=TWO_PI/n;
+  var hover=false;
+
   for(var i=0; i<n; i++){
-    productOptions.push(new ExploreProduct(i,p5.Vector.add(origin,currentOffset), currentA+offsetA+i*aStep,s*2,s*0.5));
+    productOptions.push(new ExploreProduct(i,p5.Vector.add(origin,currentOffset), i*aStep,s*2,s*0.5,8));
   }
 
   this.click=function(){
     var selected=null;
-    productOptions.forEach(function(option,i){
-      if(option.hover){
-        selected=option;
+    if(hover){
+      targetOffset=createVector(0,0);
+      targetA=0;
+      targetScale=1;
+    } else {
+      productOptions.forEach(function(option,i){
+        option.click();
+        if(option.hover){
+          selected=option;
+        }
+      });
+
+      if(selected){
+        targetOffset=createVector(cos(offsetA)*selected.l, sin(offsetA)*selected.l).mult(-1);
+        targetA=-selected.a;
+        targetScale=3;
+        if(selected.aspectHover){
+          targetScale=5;
+        }
+        // console.log(selected.a,currentA)
       }
-    });
-    if(selected){
-      targetOffset=p5.Vector.sub(createVector(selected.currX,selected.currY),currentOffset).mult(-1);
     }
   }
 
-  this.show=function(){
+  this.run=function(){
+    var diffScl=targetScale-currentScale;
+    if(abs(diffScl)>0.0001){
+      currentScale+=diffScl/20;
+    }
     var diff=p5.Vector.sub(targetOffset,currentOffset);
     // console.log(diff.mag());
-    if(diff.mag()>0.001){
+    if(diff.mag()>0.01){
       currentOffset.add(diff.mult(0.05));
     }
+    var diffA=targetA-currentA;
+    // console.log(diffA);
+    if(abs(diffA)>0.00001){
+      currentA+=diffA/20;//=(currentA+TWO_PI+diffA/20)%TWO_PI;
+    }
+    hover=dist(mouseX, mouseY,transform(origin.x+currentOffset.x,width/2,currentScale),transform(origin.y+currentOffset.y,height/2,currentScale))<s*currentScale/2;
+  };
+
+  this.show=function(){
+    push();
+    translate(width/2, height/2);
+    scale(currentScale);
+    translate(-width/2, -height/2);
+    rectMode(CORNER);
+    stroke(255,0,0);
+    noFill();
+    rect(0,0,width,height);
+
+
     var hovered=false;
     productOptions.forEach(function(option,i){
-      option.show()
+      option.run(currentA+offsetA, currentScale);
+      option.show(currentA+offsetA, currentScale);
       if(option.hover){
         hovered=true;
       }
       option.origin=p5.Vector.add(origin,currentOffset);
-      option.a=currentA+offsetA+i*aStep;
-      option.l=s*2;
+      // option.a=i*aStep;
+      // option.l=s*2;
     });
     if(!hovered){
       currentA+=rot;
     }
-    fill(255,100);
+    fill(hover?255:100);
     noStroke();
-    ellipse(origin.x,origin.y,s);
+    ellipse(origin.x+currentOffset.x,origin.y+currentOffset.y,s);
     // currentA+=rot;
+    pop();
   };
 
-  function ExploreProduct(id,origin,a,l,s){
+  function ExploreProduct(id,origin,a,l,s,n){
     this.origin=origin;
     this.a=a;
     this.l=l;
     this.currX=this.origin.x+cos(this.a)*this.l;
     this.currY=this.origin.y+sin(this.a)*this.l;
     this.hover=false;
+    this.aspectHover=false;
+    var self=this;
+    var currentA=0;
+    var targetA=0;
     // console.log(currX, currY);
 
-    this.show=function(){
-      this.currX=this.origin.x+cos(this.a)*this.l;
-      this.currY=this.origin.y+sin(this.a)*this.l;
-      this.hover=dist(mouseX, mouseY, this.currX, this.currY)<s/2;
+    var aspects=[];
+    var aSpan=TWO_PI/n;
+    for (var i=0; i<n; i++){
+      aspects.push(new Aspect(i,i*aSpan,aSpan,s));
+    }
+    console.log(aspects);
+
+    this.click=function(){
+      var selected=null;
+      this.aspectHover=false;
+      aspects.forEach(function(aspect){
+        // aspect.show(currentA, self.currX, self.currY, scl, mouseA,d);
+        if(aspect.click()){
+          selected=aspect;
+          self.aspectHover=true;
+        }
+      });
+      if(selected){
+        targetA=-selected.a;
+      }
+    };
+
+    this.run=function(givenA, scl){
+      this.currX=this.origin.x+cos(givenA+this.a)*this.l;
+      this.currY=this.origin.y+sin(givenA+this.a)*this.l;
+      this.hover=dist(mouseX, mouseY, transform(this.currX, width/2,scl), transform(this.currY,height/2,scl))<s*scl/2;
+      var diffA=targetA-currentA;
+      if(abs(diffA)>0.0001){
+        currentA+=diffA/20;
+      }
+    };
+
+    this.show=function(givenA, scl){
       push();
       stroke(255);
+      strokeWeight(s*0.1);
       line(this.origin.x, this.origin.y, this.currX, this.currY);
       translate(this.currX, this.currY);
       fill(this.hover?200:80);
+      noStroke();
       ellipse(0,0,s);
       fill(this.hover?0:255);
       textAlign(CENTER, CENTER);
       textSize(s/2);
       text(id,0,0);
+      pop();
+      mouseA=atan2(mouseY-transform(self.currY,height/2,scl), mouseX-transform(self.currX, width/2,scl));
+      if(mouseA<0){
+        mouseA=TWO_PI+mouseA;
+      }
+      var d=dist(mouseX, mouseY, transform(self.currX, width/2,scl), transform(self.currY,height/2,scl));
+      stroke(255,0,0);
+      strokeWeight(1);
+      push();
+      translate(self.currX, self.currY);
+      rotate(mouseA);
+      line(0,0,d/currentScale,0);
+      pop();
+      aspects.forEach(function(aspect){
+        aspect.show(currentA, self.currX, self.currY, scl, mouseA,d);
+
+      });
+    };
+  }
+
+  function Aspect(id,a,aSpan,s){
+    this.a=a;
+    var sa=0;//-0.48*aSpan;
+    var ea=0.96*aSpan;
+    var midR=s/2+s/4;
+    var spanR=s*0.5;
+    var hover=false;
+
+    this.click=function(){
+      return(hover);
+    };
+
+    this.show=function(givenA,x,y,scl,mouseA, mouseD){
+      // var d=dist(mouseX, mouseY, transform(x, width/2,scl), transform(y,height/2,scl));
+      // hover=d<s && d>s/2 &&
+      // console.log(x,y,midR);
+      hover=mouseD<s*scl && mouseD>s*scl/2 && mouseA>(givenA+this.a+TWO_PI+sa)%TWO_PI && mouseA<(givenA+this.a+TWO_PI+ea)%TWO_PI;
+      push();
+      translate(x,y);
+      rotate(givenA+this.a);
+      noFill();
+      strokeCap(SQUARE);
+      stroke(80+id*20,hover?255:160);
+      strokeWeight(spanR*(hover?2:1));
+      arc(0,0,midR*2, midR*2, sa, ea);
       pop();
     };
   }
