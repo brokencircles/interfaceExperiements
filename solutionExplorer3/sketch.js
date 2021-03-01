@@ -1,5 +1,7 @@
 var productImage;
 var productExplorer;
+var productAspects=["materials","manufacture","useful life", "hackable", "repairable", "reuse", "retained value","price"];
+
 
 function preload(){
   productImage=loadImage('images/duck.png');
@@ -33,8 +35,9 @@ function ProductExplorer(x0,y0,s0,x1,y1,w1,h1){
   oy=y0;
   colorMode(HSB);
   var aStep=TWO_PI/numVals;
+  yStep1=h1/(numVals-1);
   for(var i=0; i<numVals; i++){
-    vrs.push(new ValueRing(i, i/numVals,ox, oy,s0/2,(0.5+i)*aStep,aStep,"testing"));
+    vrs.push(new ValueRing(i, i/numVals,ox, oy,s0/2,(0.5+i)*aStep,aStep,productAspects[i],x1,y1+i*yStep1,w1));
   }
 
   var productImage=null;
@@ -70,7 +73,8 @@ function ProductExplorer(x0,y0,s0,x1,y1,w1,h1){
   };
 }
 
-function ValueRing(id,rel,x,y,s,a,aStep,label){
+function ValueRing(id,rel,x,y,s,a,aStep,label,x1,y1,l1){
+  console.log(y1);
   var val=random();
   var r=s/2;
   var c=r*0.55;
@@ -83,10 +87,17 @@ function ValueRing(id,rel,x,y,s,a,aStep,label){
   var iVerts=[];
   var pointsPerSeg=50;
   var drift=s*0.1;
-  var noiseStep=width/50;
+  var noiseStep=s/30;
   var sa=a-aStep*0.45;
   var ea=a+aStep*0.45;
   var hover=false;
+  var vertsLine=[];
+  var open=0;
+
+  for(var i=0; i<pointsPerSeg; i++){
+    var n=noise(nxOff+i/10,y1)-0.5;
+    vertsLine.push({x:x1+i*l1/pointsPerSeg, y:y1+drift*n});
+  }
 
   for(var i=0; i<pointsPerSeg; i++){
     var px=bezierPoint(r,r,c,0,i/pointsPerSeg);
@@ -148,12 +159,33 @@ function ValueRing(id,rel,x,y,s,a,aStep,label){
     noStroke();
     fill(0,0,0);
     noStroke();
-    textAlign(CENTER, CENTER);
-    textSize(s*0.1);
-    text(nf(val*5,1,1),0,-r*1.5);
-    textSize(s*0.08);
-    text(label,0,-r*1.8);
+    if(hover){
+      textAlign(CENTER, CENTER);
+      textSize(s*0.1);
+      text(nf(val*5,1,1),0,-r*1.7);
+      textSize(s*0.08);
+      text(label,0,-r*1.4);
+    }
     pop();
+    stroke(0,0,10);
+    strokeWeight(s*0.01);
+    noFill();
+    beginShape();
+    vertsLine.forEach(function(v,i){
+      if(i/pointsPerSeg>=val){
+        vertex(v.x, v.y);
+      }
+    });
+    endShape();
+    noStroke();
+    fill(0,0,0);
+    noStroke();
+    textFont('Homemade Apple');
+    textAlign(LEFT, CENTER);
+    textSize(s*0.1);
+    text(nf(val*5,1,1),vertsLine[vertsLine.length-1].x+s*0.1, vertsLine[0].y);
+    textSize(s*0.08);
+    text(label,vertsLine[0].x, vertsLine[0].y-s*0.05);
   };
 
   this.showVals=function(){
@@ -188,6 +220,16 @@ function ValueRing(id,rel,x,y,s,a,aStep,label){
     endShape();
 
     pop();
+    stroke(cHue,hover?30:70,hover?100:70,1);
+    strokeWeight(s*(hover?0.1:0.06));
+    noFill();
+    beginShape();
+    vertsLine.forEach(function(v,i){
+      if(i/pointsPerSeg<val){
+        vertex(v.x, v.y);
+      }
+    });
+    endShape();
   };
 
 }
