@@ -1,0 +1,129 @@
+{"productData":[
+  {
+    "productID": 100001,
+    "productName": "rubber duck",
+    "productDescription": "some helpful text description",
+    "imageFile":"rubberDuck",
+    "need":"toy",
+    "ratedAspects":{
+        "material": {
+        "rating": 1,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "manufacture": {
+        "rating": 0,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "usefulLife": {
+        "rating": 2.5,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "hackable": {
+        "rating": 3,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "repairable": {
+        "rating": 1,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "retainedValue": {
+        "rating": 0,
+        "features":[]
+      },
+      "price": {
+        "rating": 2,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      }
+    },
+    "factualAspects":{
+      "aspect0":"something surprising",
+      "aspect1":"",
+      "aspect2":"totally obvious",
+      "aspect3":""
+    }
+  },{
+    "productID": 100002,
+    "productName": "hardwood toy",
+    "productDescription": "some helpful text description",
+    "imageFile":"hardwoodToy",
+    "need":"toy",
+    "ratedAspects":{
+        "material": {
+        "rating": 1,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "manufacture": {
+        "rating": 0,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "usefulLife": {
+        "rating": 2.5,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "hackable": {
+        "rating": 3,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "repairable": {
+        "rating": 1,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "retainedValue": {
+        "rating": 0,
+        "features":[]
+      },
+      "price": {
+        "rating": 2,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      }
+    },
+    "factualAspects":{
+      "aspect0":"something surprising",
+      "aspect1":"",
+      "aspect2":"totally obvious",
+      "aspect3":""
+    }
+  },{
+    "productID": 100003,
+    "productName": "electronic toy",
+    "productDescription": "some helpful text description",
+    "imageFile":"electronicToy",
+    "need":"toy",
+    "ratedAspects":{
+        "material": {
+        "rating": 1,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "manufacture": {
+        "rating": 0,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "usefulLife": {
+        "rating": 2.5,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "hackable": {
+        "rating": 3,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "repairable": {
+        "rating": 1,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "retainedValue": {
+        "rating": 0,
+        "features":[]
+      },
+      "price": {
+        "rating": 2,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      }
+    },
+    "factualAspects":{
+      "aspect0":"something surprising",
+      "aspect1":"",
+      "aspect2":"totally obvious",
+      "aspect3":""
+    }
+  }
+]}
