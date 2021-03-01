@@ -90,7 +90,7 @@ function Explorer(x,y,s){
   var hover=false;
 
   for(var i=0; i<n; i++){
-    productOptions.push(new ExploreProduct(i,p5.Vector.add(origin,currentOffset), i*aStep,s*2,s*0.5,8));
+    productOptions.push(new ExploreProduct(i,p5.Vector.add(origin,currentOffset), i*aStep,s*2,s*1,8));
   }
 
   this.click=function(){
@@ -110,7 +110,7 @@ function Explorer(x,y,s){
       if(selected){
         targetOffset=createVector(cos(offsetA)*selected.l, sin(offsetA)*selected.l).mult(-1);
         targetA=-selected.a;
-        targetScale=3;
+        targetScale=4;
         if(selected.aspectHover){
           targetScale=5;
         }
@@ -249,11 +249,19 @@ function Explorer(x,y,s){
 
   function Aspect(id,a,aSpan,s){
     this.a=a;
+    var labels=["social","hackable","repairable","material","manufacture","end of life","regenerate","waste"];
+    var label=labels[id];
     var sa=0;//-0.48*aSpan;
     var ea=0.96*aSpan;
-    var midR=s/2+s/4;
+    var midR=s/2+s*0.125;
+    var effR=midR;
     var spanR=s*0.5;
     var hover=false;
+    var effScl=0;
+    var currentVal=random();
+    var cHue=id*50;
+    var effVR=0;
+    var spanVR=0;
 
     this.click=function(){
       return(hover);
@@ -264,14 +272,48 @@ function Explorer(x,y,s){
       // hover=d<s && d>s/2 &&
       // console.log(x,y,midR);
       hover=mouseD<s*scl && mouseD>s*scl/2 && mouseA>(givenA+this.a+TWO_PI+sa)%TWO_PI && mouseA<(givenA+this.a+TWO_PI+ea)%TWO_PI;
+      if(hover){
+        effScl+=(1-effScl)/10;
+      } else {
+        effScl+=(0-effScl/10);
+      }
+      spanR=s*(0.25+0.25*effScl);
+      effR=midR+(spanR-s*0.25)/2;
+      spanVR=currentVal*spanR;
+      effVR=midR+(spanVR-s*0.25)/2;
       push();
       translate(x,y);
       rotate(givenA+this.a);
       noFill();
       strokeCap(SQUARE);
-      stroke(80+id*20,hover?255:160);
-      strokeWeight(spanR*(hover?2:1));
-      arc(0,0,midR*2, midR*2, sa, ea);
+      stroke(160);//(80+id*20,hover?255:160);
+      strokeWeight(spanR);
+      arc(0,0,effR*2, effR*2, sa, ea);
+      colorMode(HSB);
+      stroke(cHue,70,80,hover?1:0.5);
+      strokeWeight(spanVR);
+      arc(0,0,effVR*2, effVR*2, sa, ea);
+      colorMode(RGB);
+      push();
+      rotate(sa+aSpan*0.5);
+      translate(effR,0)
+      push();
+      translate((spanR-s*0.25)/2,0);
+      rotate(PI/2);
+      textSize(s*0.1*(effScl));
+      fill(0);
+      noStroke();
+      textAlign(CENTER, CENTER);
+      text(label,0,0);
+      pop();
+      rotate(-(givenA+this.a+sa+aSpan*0.5));
+      textSize(s*0.1*(effScl+1));
+      fill(255);
+      noStroke();
+      textAlign(CENTER, CENTER);
+      text(nf(currentVal*5,1,1),0,0);
+
+      pop();
       pop();
     };
   }
