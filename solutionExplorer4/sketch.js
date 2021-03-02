@@ -15,13 +15,21 @@ var context=SELECTOR;
 var selector, solution;
 var loadedData;
 var explorer;
+var offsetRef=0;
+
+var productImage;
+// var productExplorer;
+var productAspects=["materials","manufacture","useful life", "hackable", "repairable", "reuse", "retained value","price"];
+
 
 function preload(){
   loadedData=loadJSON('data.json');
+  productImage=loadImage('images/duck.png');
 }
 
 function setup() {
-  createCanvas(500,500);
+  createCanvas(800,500);
+  offsetRef=height/2;
   // console.log(loadedData);
   // colorMode(HSB);
   // space={
@@ -40,7 +48,7 @@ function setup() {
   // };
   // selector=new Selector(space,200,3);
   // solution=new Solution(space,200,3);
-  explorer=new Explorer(width/2, height/2, height*0.1);
+  explorer=new Explorer(height/2, height/2, height*0.1);
 }
 
 function draw() {
@@ -56,7 +64,8 @@ function draw() {
   // } else {
   //   solution.show(FULL);
   // }
-  background(40);
+  colorMode(RGB);
+  background(220);
   explorer.run();
   explorer.show();
 }
@@ -90,9 +99,12 @@ function Explorer(x,y,s){
   var productOptions=[];
   var aStep=TWO_PI/n;
   var hover=false;
+  var productRevealed=false;
 
   for(var i=0; i<n; i++){
     productOptions.push(new ExploreProduct(i,p5.Vector.add(origin,currentOffset), i*aStep,s*2,s*1,8));
+    // productExplorer=new ProductExplorer(height/2,height/2,height*0.8, height,height*2/7,width*0.3, width*0.3);
+    // productExplorer.assignProduct(null,productImage);
   }
 
   this.click=function(){
@@ -122,10 +134,12 @@ function Explorer(x,y,s){
   }
 
   this.run=function(){
+    productRevealed=false;
     var diffScl=targetScale-currentScale;
     if(abs(diffScl)>0.0001){
       currentScale+=diffScl/20;
     }
+    productRevealed=targetScale==4 && abs(diffScl)<0.5;
     var diff=p5.Vector.sub(targetOffset,currentOffset);
     // console.log(diff.mag());
     if(diff.mag()>0.01){
@@ -136,14 +150,15 @@ function Explorer(x,y,s){
     if(abs(diffA)>0.00001){
       currentA+=diffA/20;//=(currentA+TWO_PI+diffA/20)%TWO_PI;
     }
-    hover=dist(mouseX, mouseY,transform(origin.x+currentOffset.x,width/2,currentScale),transform(origin.y+currentOffset.y,height/2,currentScale))<s*currentScale/2;
+    hover=dist(mouseX, mouseY,transform(origin.x+currentOffset.x,offsetRef,currentScale),transform(origin.y+currentOffset.y,height/2,currentScale))<s*currentScale/2;
+    // console.log(productRevealed);
   };
 
   this.show=function(){
     push();
-    translate(width/2, height/2);
+    translate(offsetRef, height/2);
     scale(currentScale);
-    translate(-width/2, -height/2);
+    translate(-offsetRef, -height/2);
     rectMode(CORNER);
     stroke(255,0,0);
     noFill();
@@ -152,7 +167,7 @@ function Explorer(x,y,s){
 
     var hovered=false;
     productOptions.forEach(function(option,i){
-      option.run(currentA+offsetA, currentScale);
+      option.run(currentA+offsetA, currentScale, productRevealed);
       option.show(currentA+offsetA, currentScale);
       if(option.hover){
         hovered=true;
@@ -171,44 +186,51 @@ function Explorer(x,y,s){
     pop();
   };
 
+
+
+
   function ExploreProduct(id,origin,a,l,s,n){
+    var productExplorer=new ProductExplorer(s*2);
     this.origin=origin;
     this.a=a;
     this.l=l;
     this.currX=this.origin.x+cos(this.a)*this.l;
     this.currY=this.origin.y+sin(this.a)*this.l;
+    // console.log(this.currX,this.currY);
     this.hover=false;
     this.aspectHover=false;
     var self=this;
     var currentA=0;
     var targetA=0;
+    var productRevealed=false;
     // console.log(currX, currY);
 
-    var aspects=[];
-    var aSpan=TWO_PI/n;
-    for (var i=0; i<n; i++){
-      aspects.push(new Aspect(i,i*aSpan,aSpan,s));
-    }
+    // var aspects=[];
+    // var aSpan=TWO_PI/n;
+    // for (var i=0; i<n; i++){
+    //   aspects.push(new Aspect(i,i*aSpan,aSpan,s));
+    // }
 
     this.click=function(){
-      var selected=null;
-      this.aspectHover=false;
-      aspects.forEach(function(aspect){
-        // aspect.show(currentA, self.currX, self.currY, scl, mouseA,d);
-        if(aspect.click()){
-          selected=aspect;
-          self.aspectHover=true;
-        }
-      });
-      if(selected){
-        targetA=-selected.a;
-      }
+      // var selected=null;
+      // this.aspectHover=false;
+      // aspects.forEach(function(aspect){
+      //   // aspect.show(currentA, self.currX, self.currY, scl, mouseA,d);
+      //   if(aspect.click()){
+      //     selected=aspect;
+      //     self.aspectHover=true;
+      //   }
+      // });
+      // if(selected){
+      //   targetA=-selected.a;
+      // }
     };
 
-    this.run=function(givenA, scl){
+    this.run=function(givenA, scl, revealed){
+      productRevealed=revealed;
       this.currX=this.origin.x+cos(givenA+this.a)*this.l;
       this.currY=this.origin.y+sin(givenA+this.a)*this.l;
-      this.hover=dist(mouseX, mouseY, transform(this.currX, width/2,scl), transform(this.currY,height/2,scl))<s*scl/2;
+      this.hover=dist(mouseX, mouseY, transform(this.currX, offsetRef,scl), transform(this.currY,height/2,scl))<s*scl/2;
       var diffA=targetA-currentA;
       if(abs(diffA)>0.0001){
         currentA+=diffA/20;
@@ -216,19 +238,23 @@ function Explorer(x,y,s){
     };
 
     this.show=function(givenA, scl){
+      colorMode(RGB);
       push();
       stroke(255);
       strokeWeight(s*0.1);
       line(this.origin.x, this.origin.y, this.currX, this.currY);
       translate(this.currX, this.currY);
-      // fill(this.hover?200:80);
-      // noStroke();
-      // ellipse(0,0,s);
-      // fill(this.hover?0:255);
-      // textAlign(CENTER, CENTER);
-      // textSize(s/2);
-      // text(id,0,0);
+      fill(this.hover?200:80);
+      noStroke();
+      ellipse(0,0,s);
+      fill(this.hover?0:255);
+      textFont('arial');
+      textAlign(CENTER, CENTER);
+      textSize(s/2);
+      text(id,0,0);
       pop();
+      productExplorer.show(this.currX, this.currY, scl, productRevealed);
+
       // mouseA=atan2(mouseY-transform(self.currY,height/2,scl), mouseX-transform(self.currX, width/2,scl));
       // if(mouseA<0){
       //   mouseA=TWO_PI+mouseA;
@@ -248,75 +274,305 @@ function Explorer(x,y,s){
     };
   }
 
-  function Aspect(id,a,aSpan,s){
-    this.a=a;
-    var labels=["social","hackable","repairable","material","manufacture","end of life","regenerate","waste"];
-    var label=labels[id];
-    var sa=0;//-0.48*aSpan;
-    var ea=0.96*aSpan;
-    var midR=s/2+s*0.125;
-    var effR=midR;
-    var spanR=s*0.5;
-    var hover=false;
-    var effScl=0;
-    var currentVal=random();
-    var cHue=id*50;
-    var effVR=0;
-    var spanVR=0;
 
-    this.click=function(){
-      return(hover);
-    };
+  function ProductExplorer(s){
+    var x0=0,y0=0,s0=s,x1=0,y1=0,w1=s/2,h1=s/2;
+    var vrs=[];
+    var numVals=8;
+    ox=x0;
+    oy=y0;
+    colorMode(HSB);
+    var aStep=TWO_PI/numVals;
+    yStep1=h1/(numVals-1);
+    for(var i=0; i<numVals; i++){
+      vrs.push(new ValueRing(i, i/numVals,ox, oy,s0/2,(0.5+i)*aStep,aStep,productAspects[i],x1,y1+i*yStep1,w1));
+    }
 
-    this.show=function(givenA,x,y,scl,mouseA, mouseD){
-      // var d=dist(mouseX, mouseY, transform(x, width/2,scl), transform(y,height/2,scl));
-      // hover=d<s && d>s/2 &&
-      // console.log(x,y,midR);
-      hover=mouseD<s*scl && mouseD>s*scl/2 && mouseA>(givenA+this.a+TWO_PI+sa)%TWO_PI && mouseA<(givenA+this.a+TWO_PI+ea)%TWO_PI;
-      if(hover){
-        effScl+=(1-effScl)/10;
-      } else {
-        effScl+=(0-effScl/10);
-      }
-      spanR=s*(0.25+0.25*effScl);
-      effR=midR+(spanR-s*0.25)/2;
-      spanVR=currentVal*spanR;
-      effVR=midR+(spanVR-s*0.25)/2;
-      push();
-      translate(x,y);
-      rotate(givenA+this.a);
-      noFill();
-      strokeCap(SQUARE);
-      stroke(160);//(80+id*20,hover?255:160);
-      strokeWeight(spanR);
-      arc(0,0,effR*2, effR*2, sa, ea);
+    var productImage=null;
+
+    this.assignProduct=function(productData,img){
+      productImage=img;
+    }
+
+    this.show=function(cx,cy,scl,productRevealed){
+      ox=x0=cx;
+      oy=y0=cy;
+      x1=x0+s/2;
+      y1=y0;
       colorMode(HSB);
-      stroke(cHue,70,80,hover?1:0.5);
-      strokeWeight(spanVR);
-      arc(0,0,effVR*2, effVR*2, sa, ea);
+      // background(0,0,90);
+      blendMode(BLEND);
+      var md=dist(mouseX, mouseY, ox,oy);
+      var ma=atan2(mouseY-oy, mouseX-ox);
+      ma+=PI/2;
+      if(ma<0){
+        ma=TWO_PI+ma;
+      }
+      vrs.forEach(function(vr){
+        vr.run(x0,y0,x1,y1,mouseX,mouseY,ma,md,scl, productRevealed);
+        vr.showFixtures();
+      });
+      blendMode(MULTIPLY);
+      vrs.forEach(function(vr){
+        vr.showVals();
+      });
+      blendMode(BLEND);
+      if(productImage){
+        imageMode(CENTER);
+        image(productImage,x0,y0,s0/3,s0/3);
+      }
       colorMode(RGB);
-      push();
-      rotate(sa+aSpan*0.5);
-      translate(effR,0)
-      push();
-      translate((spanR-s*0.25)/2,0);
-      rotate(PI/2);
-      textSize(s*0.1*(effScl));
-      fill(0);
-      noStroke();
-      textAlign(CENTER, CENTER);
-      text(label,0,0);
-      pop();
-      rotate(-(givenA+this.a+sa+aSpan*0.5));
-      textSize(s*0.1*(effScl+1));
-      fill(255);
-      noStroke();
-      textAlign(CENTER, CENTER);
-      text(nf(currentVal*5,1,1),0,0);
 
-      pop();
-      pop();
     };
   }
 
+  function ValueRing(id,rel,x,y,s,a,aStep,label,x1,y1,l1){
+    // console.log(y1);
+    var val=random();
+    var r=s/2;
+    var c=r*0.55;
+    var er=r+r*val
+    var mr=r*2;
+    var cHue=rel*360;
+    var nxOff=random(10);
+    var nyOff=random(10);
+    var verts=[];
+    var iVerts=[];
+    var pointsPerSeg=50;
+    var drift=s*0.1;
+    var noiseStep=s/30;
+    var sa=a-aStep*0.45;
+    var ea=a+aStep*0.45;
+    var hover=false;
+    var vertsLine=[];
+    var open=0;
+    var productRevealed=false;
+
+    for(var i=0; i<pointsPerSeg; i++){
+      var n=noise(nxOff+i/10,y1)-0.5;
+      vertsLine.push({x:i*l1/pointsPerSeg, y:y1+drift*n});
+    }
+
+    for(var i=0; i<pointsPerSeg; i++){
+      var px=bezierPoint(r,r,c,0,i/pointsPerSeg);
+      var py=bezierPoint(0,c,r,r,i/pointsPerSeg);
+      verts.push({x:px, y:py});
+    }
+    for(var i=0; i<pointsPerSeg; i++){
+      var px=bezierPoint(0,-c,-r,-r,i/pointsPerSeg);
+      var py=bezierPoint(r,r,c,0,i/pointsPerSeg);
+      verts.push({x:px, y:py});
+    }
+    for(var i=0; i<pointsPerSeg; i++){
+      var px=bezierPoint(-r,-r,-c,0,i/pointsPerSeg);
+      var py=bezierPoint(0,-c,-er,-er,i/pointsPerSeg);
+      verts.push({x:px, y:py});
+    }
+    for(var i=0; i<pointsPerSeg; i++){
+      var px=bezierPoint(0,c,r,r,i/pointsPerSeg);
+      var py=bezierPoint(-er,-er,-c,0,i/pointsPerSeg);
+      verts.push({x:px, y:py});
+    }
+    verts.forEach(function(v){
+      var nx=noise(nxOff+v.x/(10*noiseStep),v.y/(10*noiseStep))-0.5;
+      var ny=noise(nyOff+v.x/(8*noiseStep),v.y/(7*noiseStep))-0.5;
+      v.x+=nx*drift;
+      v.y+=ny*drift;
+    });
+    var aStep=TWO_PI/pointsPerSeg;
+    var ir=r*0.9;
+    for(var i=0; i<pointsPerSeg; i++){
+      var px=x+cos(i*aStep)*ir;
+      var py=y+sin(i*aStep)*ir;
+      var n=noise(nxOff+px/noiseStep, nyOff+py/noiseStep-0.5);
+      px=cos(TWO_PI-i*aStep)*ir*(0.9+0.2*n);
+      py=sin(TWO_PI-i*aStep)*ir*(0.9+0.2*n);
+      iVerts.push({x:px, y:py});
+    }
+
+    this.run=function(cx,cy,lx,ly,mx,my,ma,md,scl, revealed){
+      productRevealed=revealed;
+      x=cx;
+      y=cy;
+      x1=lx;
+      y1=ly;
+      var isInR=md>r*scl && md<mr*scl;
+      var isInA=(ma>sa && ma<ea);
+      hover=isInA && isInR;
+    };
+
+    this.showFixtures=function(){
+      textFont('Homemade Apple');
+      push();
+      translate(x,y);
+      rotate(a);
+      stroke(cHue,40,60);
+      strokeWeight(s*(hover?0.02:0.005));
+      noFill();
+      beginShape();
+      vertex(r,0);
+      bezierVertex(r,c, c,r, 0,r);
+      bezierVertex(-c,r ,-r,c, -r,0);
+      bezierVertex(-r,-c, -c,-mr, 0,-mr);
+      bezierVertex(c,-mr, r,-c, r,0);
+      endShape();
+      noStroke();
+      fill(0,0,0);
+      noStroke();
+      if(hover){
+        textAlign(CENTER, CENTER);
+        textSize(s*0.1);
+        text(nf(val*5,1,1),0,-r*1.7);
+        textSize(s*0.08);
+        text(label,0,-r*1.4);
+      }
+      pop();
+      if(productRevealed){
+        push();
+        translate(x1,y1);
+        stroke(0,0,10);
+        strokeWeight(s*0.01);
+        noFill();
+        beginShape();
+        vertsLine.forEach(function(v,i){
+          if(i/pointsPerSeg>=val){
+            vertex(v.x, v.y);
+          }
+        });
+        endShape();
+        noStroke();
+        fill(0,0,0);
+        noStroke();
+        textAlign(LEFT, CENTER);
+        textSize(s*0.1);
+        text(nf(val*5,1,1),vertsLine[vertsLine.length-1].x+s*0.1, vertsLine[0].y);
+        textSize(s*0.08);
+        text(label,vertsLine[0].x, vertsLine[0].y-s*0.05);
+        pop();
+      }
+    };
+
+    this.showVals=function(){
+      // val=sin(a+frameCount*PI/100)*0.5+0.5;
+      // er=r+r*val;
+      push();
+      translate(x,y);
+      rotate(a);
+      // stroke(cHue,40,60);
+      // strokeWeight(1);
+      // noFill();
+      // beginShape();
+      // vertex(r,0);
+      // bezierVertex(r,c, c,r, 0,r);
+      // bezierVertex(-c,r ,-r,c, -r,0);
+      // bezierVertex(-r,-c, -c,-mr, 0,-mr);
+      // bezierVertex(c,-mr, r,-c, r,0);
+      // endShape();
+      noStroke();
+      // strokeWeight(s*0.05);
+      fill(cHue,70,hover?100:80,hover?1:0.3);
+
+      beginShape();
+      verts.forEach(function(v){
+        vertex(v.x, v.y);
+      });
+      beginContour();
+      iVerts.forEach(function(iv){
+        vertex(iv.x, iv.y);
+      });
+      endContour();
+      endShape();
+
+      pop();
+      if(productRevealed){
+        push();
+        translate(x1,y1);
+        stroke(cHue,hover?30:70,hover?100:70,1);
+        strokeWeight(s*(hover?0.1:0.06));
+        noFill();
+        beginShape();
+        vertsLine.forEach(function(v,i){
+          if(i/pointsPerSeg<val){
+            vertex(v.x, v.y);
+          }
+        });
+        endShape();
+        pop();
+      }
+    };
+
+  }
+
+
+//   function Aspect(id,a,aSpan,s){
+//     this.a=a;
+//     var labels=["social","hackable","repairable","material","manufacture","end of life","regenerate","waste"];
+//     var label=labels[id];
+//     var sa=0;//-0.48*aSpan;
+//     var ea=0.96*aSpan;
+//     var midR=s/2+s*0.125;
+//     var effR=midR;
+//     var spanR=s*0.5;
+//     var hover=false;
+//     var effScl=0;
+//     var currentVal=random();
+//     var cHue=id*50;
+//     var effVR=0;
+//     var spanVR=0;
+//
+//     this.click=function(){
+//       return(hover);
+//     };
+//
+//     this.show=function(givenA,x,y,scl,mouseA, mouseD){
+//       // var d=dist(mouseX, mouseY, transform(x, width/2,scl), transform(y,height/2,scl));
+//       // hover=d<s && d>s/2 &&
+//       // console.log(x,y,midR);
+//       hover=mouseD<s*scl && mouseD>s*scl/2 && mouseA>(givenA+this.a+TWO_PI+sa)%TWO_PI && mouseA<(givenA+this.a+TWO_PI+ea)%TWO_PI;
+//       if(hover){
+//         effScl+=(1-effScl)/10;
+//       } else {
+//         effScl+=(0-effScl/10);
+//       }
+//       spanR=s*(0.25+0.25*effScl);
+//       effR=midR+(spanR-s*0.25)/2;
+//       spanVR=currentVal*spanR;
+//       effVR=midR+(spanVR-s*0.25)/2;
+//       push();
+//       translate(x,y);
+//       rotate(givenA+this.a);
+//       noFill();
+//       strokeCap(SQUARE);
+//       stroke(160);//(80+id*20,hover?255:160);
+//       strokeWeight(spanR);
+//       arc(0,0,effR*2, effR*2, sa, ea);
+//       colorMode(HSB);
+//       stroke(cHue,70,80,hover?1:0.5);
+//       strokeWeight(spanVR);
+//       arc(0,0,effVR*2, effVR*2, sa, ea);
+//       colorMode(RGB);
+//       push();
+//       rotate(sa+aSpan*0.5);
+//       translate(effR,0)
+//       push();
+//       translate((spanR-s*0.25)/2,0);
+//       rotate(PI/2);
+//       textSize(s*0.1*(effScl));
+//       fill(0);
+//       noStroke();
+//       textAlign(CENTER, CENTER);
+//       text(label,0,0);
+//       pop();
+//       rotate(-(givenA+this.a+sa+aSpan*0.5));
+//       textSize(s*0.1*(effScl+1));
+//       fill(255);
+//       noStroke();
+//       textAlign(CENTER, CENTER);
+//       text(nf(currentVal*5,1,1),0,0);
+//
+//       pop();
+//       pop();
+//     };
+//   }
+//
 }
