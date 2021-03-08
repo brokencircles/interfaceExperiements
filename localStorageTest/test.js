@@ -1,7 +1,6 @@
 var persist=new PersistStore(5);
 
 
-
 // checkAndUpdateStatus();
 
 function initialiseStore(){

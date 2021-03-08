@@ -6,11 +6,18 @@ function PersistStore(n){
     chapterInStory: ""
   };
 
+  var changed=false;
 
-  this.update=function(){
-    this.updateStorage();
-    console.log(this.vals);
-  }
+  this.didChange=function(){ //check if something changed and reset changed flag regardless
+    var res=changed;
+    changed=false;
+    return res;
+  };
+
+  // this.update=function(){
+  //   this.updateStorage();
+  //   console.log(this.vals);
+  // }
 
   this.reset=function(){
     if(localStorage.bmcStatus && localStorage.bmcStatus=="initialised"){
@@ -31,6 +38,7 @@ function PersistStore(n){
     storageKeys.forEach(function(key){
       localStorage[key]=cache[key];
     });
+    changed=true;
   };
 
 
@@ -69,7 +77,8 @@ function PersistStore(n){
       // this.vals=fillArrayWithFalse(n);
       // this.updateStorage();
     }
-    console.log(cache);
+    changed=true;
+    // console.log(cache);
   }
 
   this.init();
