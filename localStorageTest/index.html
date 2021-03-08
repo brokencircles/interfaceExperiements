@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>local storage test</title>
+    <script src="persist.js" type="text/javascript"></script>
+    <script src="test.js" type="text/javascript"></script>
+
+  </head>
+  <body onload="checkAndUpdateStatus()">
+    <h1>Test local storage</h1>
+    <h2>storage status: <span id="storage-status">none</span></h2>
+    <h2>Current product class: <span id="product-class">none</span></h2>
+    <h2>Product in class: <span id="product-in-class">none</span></h2>
+    <h2>Current story: <span id="story">none</span></h2>
+    <h2>Chapter in story: <span id="chapter-in-story">none</span></h2>
+    <button type="button" name="reset-button" onclick="clearStorage()">clear</button>
+    <button type="button" name="init-button" onclick="initialiseStore()">initialise</button>
+    <button type="button" name="change-button" onclick="changeValues()">change</button>
+    <h2>
+      <a href="page2.html">other page</a>
+    </h2>
+  </body>
+</html>
