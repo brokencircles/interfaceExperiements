@@ -18,6 +18,7 @@ var explorer;
 var offsetRef=0;
 
 var productImage;
+var productData={name:"toy duck"};
 // var productExplorer;
 var productAspects=["materials","manufacture","useful life", "hackable", "repairable", "reuse", "retained value","price"];
 
@@ -101,8 +102,24 @@ function Explorer(x,y,s){
   var hover=false;
   var productRevealed=false;
 
+  var ringVerts=[];
+  var numVerts=50;
+  var noiseFactor=0.2;
+
+  var ringAStep=TWO_PI/numVerts;
+  for(var i=0; i<numVerts*3; i++){
+    var vx=x+cos(i*ringAStep)*s*2;
+    var vy=y+sin(i*ringAStep)*s*2;
+    var nv=noise(i*s/1000+vx*s/1000,vy*s/1000)-0.5;
+    vx=x+cos(i*ringAStep)*s*(0.9+nv*0.2)*2;
+    vy=x+sin(i*ringAStep)*s*(0.9+nv*0.2)*2;
+    ringVerts.push({x:vx, y:vy});
+  }
+
   for(var i=0; i<n; i++){
-    productOptions.push(new ExploreProduct(i,p5.Vector.add(origin,currentOffset), i*aStep,s*2,s*1,8));
+    var p=new ExploreProduct(i,p5.Vector.add(origin,currentOffset), i*aStep,s*2,s*1,8);
+    p.assignProduct(productData, productImage);
+    productOptions.push(p);
     // productExplorer=new ProductExplorer(height/2,height/2,height*0.8, height,height*2/7,width*0.3, width*0.3);
     // productExplorer.assignProduct(null,productImage);
   }
@@ -113,11 +130,16 @@ function Explorer(x,y,s){
       targetOffset=createVector(0,0);
       targetA=0;
       targetScale=1;
+      productOptions.forEach(function(option,i){
+        option.isSelected=false;
+      });
     } else {
       productOptions.forEach(function(option,i){
+        // option.isSelected=false;
         option.click();
         if(option.hover){
           selected=option;
+          option.isSelected=true;
         }
       });
 
@@ -125,9 +147,9 @@ function Explorer(x,y,s){
         targetOffset=createVector(cos(offsetA)*selected.l, sin(offsetA)*selected.l).mult(-1);
         targetA=-selected.a;
         targetScale=4;
-        if(selected.aspectHover){
-          targetScale=5;
-        }
+        // if(selected.aspectHover){
+        //   targetScale=5;
+        // }
         // console.log(selected.a,currentA)
       }
     }
@@ -145,27 +167,51 @@ function Explorer(x,y,s){
     if(diff.mag()>0.01){
       currentOffset.add(diff.mult(0.05));
     }
-    var diffA=targetA-currentA;
+    var diffA=wrapAtPi(targetA-currentA);
     // console.log(diffA);
     if(abs(diffA)>0.00001){
       currentA+=diffA/20;//=(currentA+TWO_PI+diffA/20)%TWO_PI;
     }
-    hover=dist(mouseX, mouseY,transform(origin.x+currentOffset.x,offsetRef,currentScale),transform(origin.y+currentOffset.y,height/2,currentScale))<s*currentScale/2;
+    hover=dist(mouseX, mouseY,transform(origin.x+currentOffset.x,offsetRef,currentScale),transform(origin.y+currentOffset.y,height/2,currentScale))<s*currentScale;
     // console.log(productRevealed);
   };
+
+  function wrapAtPi(a){
+    if(a>=PI) return -TWO_PI+a;
+    if(a<-PI) return TWO_PI+a;
+    return a;
+  }
 
   this.show=function(){
     push();
     translate(offsetRef, height/2);
     scale(currentScale);
     translate(-offsetRef, -height/2);
-    rectMode(CORNER);
-    stroke(255,0,0);
-    noFill();
-    rect(0,0,width,height);
+    // rectMode(CORNER);
+    // stroke(255,0,0);
+    // noFill();
+    // rect(0,0,width,height);
 
 
     var hovered=false;
+    fill(hover?160:40);
+    noStroke();
+    ellipse(origin.x+currentOffset.x,origin.y+currentOffset.y,s*2);
+    stroke(40,160);
+    strokeWeight(s*0.05);
+    noFill();
+    beginShape();
+    ringVerts.forEach(function(rv){
+      vertex(rv.x, rv.y);
+    });
+    endShape(CLOSE);
+    // ellipse(origin.x+currentOffset.x,origin.y+currentOffset.y,s*2*2);
+    fill(hover?0:255);
+    noStroke();
+    textFont('Homemade Apple');
+    textSize(s/1);
+    textAlign(CENTER, CENTER);
+    text('toy',origin.x+currentOffset.x,origin.y+currentOffset.y);
     productOptions.forEach(function(option,i){
       option.run(currentA+offsetA, currentScale, productRevealed);
       option.show(currentA+offsetA, currentScale);
@@ -179,9 +225,7 @@ function Explorer(x,y,s){
     if(!hovered){
       currentA+=rot;
     }
-    fill(hover?255:100);
-    noStroke();
-    ellipse(origin.x+currentOffset.x,origin.y+currentOffset.y,s);
+
     // currentA+=rot;
     pop();
   };
@@ -190,7 +234,9 @@ function Explorer(x,y,s){
 
 
   function ExploreProduct(id,origin,a,l,s,n){
+    this.isSelected=false;
     var productExplorer=new ProductExplorer(s*2);
+
     this.origin=origin;
     this.a=a;
     this.l=l;
@@ -210,6 +256,10 @@ function Explorer(x,y,s){
     // for (var i=0; i<n; i++){
     //   aspects.push(new Aspect(i,i*aSpan,aSpan,s));
     // }
+
+    this.assignProduct=function(productData, productImage){
+      productExplorer.assignProduct(productData,productImage);
+    }
 
     this.click=function(){
       // var selected=null;
@@ -242,10 +292,12 @@ function Explorer(x,y,s){
       push();
       stroke(255);
       strokeWeight(s*0.1);
-      line(this.origin.x, this.origin.y, this.currX, this.currY);
+      // line(this.origin.x, this.origin.y, this.currX, this.currY);
       translate(this.currX, this.currY);
-      fill(this.hover?200:80);
+      fill(200,180);
       noStroke();
+      ellipse(0,0,s*2);
+      fill(this.hover?80:200);
       ellipse(0,0,s);
       fill(this.hover?0:255);
       textFont('arial');
@@ -253,7 +305,7 @@ function Explorer(x,y,s){
       textSize(s/2);
       text(id,0,0);
       pop();
-      productExplorer.show(this.currX, this.currY, scl, productRevealed);
+      productExplorer.show(this.currX, this.currY, scl, productRevealed, this.isSelected, this.hover);
 
       // mouseA=atan2(mouseY-transform(self.currY,height/2,scl), mouseX-transform(self.currX, width/2,scl));
       // if(mouseA<0){
@@ -289,12 +341,14 @@ function Explorer(x,y,s){
     }
 
     var productImage=null;
+    var productData=null;
 
-    this.assignProduct=function(productData,img){
+    this.assignProduct=function(data,img){
       productImage=img;
+      productData=data
     }
 
-    this.show=function(cx,cy,scl,productRevealed){
+    this.show=function(cx,cy,scl,productRevealed, isSelected, hover){
       ox=x0=cx;
       oy=y0=cy;
       x1=x0+s/2;
@@ -309,7 +363,7 @@ function Explorer(x,y,s){
         ma=TWO_PI+ma;
       }
       vrs.forEach(function(vr){
-        vr.run(x0,y0,x1,y1,mouseX,mouseY,ma,md,scl, productRevealed);
+        vr.run(x0,y0,x1,y1,mouseX,mouseY,ma,md,scl, productRevealed, isSelected);
         vr.showFixtures();
       });
       blendMode(MULTIPLY);
@@ -320,6 +374,14 @@ function Explorer(x,y,s){
       if(productImage){
         imageMode(CENTER);
         image(productImage,x0,y0,s0/3,s0/3);
+      }
+      if(productData && hover){
+        fill(0,180);
+        noStroke();
+        textFont('Homemade Apple');
+        textSize(s0/6);
+        textAlign(CENTER,CENTER);
+        text(productData.name,x1,y1-s0/2);
       }
       colorMode(RGB);
 
@@ -347,6 +409,7 @@ function Explorer(x,y,s){
     var vertsLine=[];
     var open=0;
     var productRevealed=false;
+    var isSelected=false;
 
     for(var i=0; i<pointsPerSeg; i++){
       var n=noise(nxOff+i/10,y1)-0.5;
@@ -390,8 +453,9 @@ function Explorer(x,y,s){
       iVerts.push({x:px, y:py});
     }
 
-    this.run=function(cx,cy,lx,ly,mx,my,ma,md,scl, revealed){
+    this.run=function(cx,cy,lx,ly,mx,my,ma,md,scl, revealed, selected){
       productRevealed=revealed;
+      isSelected=selected;
       x=cx;
       y=cy;
       x1=lx;
@@ -419,7 +483,7 @@ function Explorer(x,y,s){
       noStroke();
       fill(0,0,0);
       noStroke();
-      if(hover){
+      if(hover && productRevealed && isSelected){
         textAlign(CENTER, CENTER);
         textSize(s*0.1);
         text(nf(val*5,1,1),0,-r*1.7);
@@ -427,7 +491,7 @@ function Explorer(x,y,s){
         text(label,0,-r*1.4);
       }
       pop();
-      if(productRevealed){
+      if(productRevealed && isSelected){
         push();
         translate(x1,y1);
         stroke(0,0,10);
@@ -484,10 +548,10 @@ function Explorer(x,y,s){
       endShape();
 
       pop();
-      if(productRevealed){
+      if(productRevealed && isSelected){
         push();
         translate(x1,y1);
-        stroke(cHue,hover?30:70,hover?100:70,1);
+        stroke(cHue,hover?70:50,hover?100:70,1);
         strokeWeight(s*(hover?0.1:0.06));
         noFill();
         beginShape();
