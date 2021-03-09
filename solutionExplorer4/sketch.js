@@ -17,19 +17,21 @@ var loadedData;
 var explorer;
 var offsetRef=0;
 
-var productImage;
-var productData={name:"toy duck"};
+var productImage=[];
+var productData=[{name:"toy duck"},{name:"wood+wool cow"}, {name:"knitted bunny"}];
 // var productExplorer;
 var productAspects=["materials","manufacture","useful life", "hackable", "repairable", "reuse", "retained value","price"];
 
 
 function preload(){
   loadedData=loadJSON('data.json');
-  productImage=loadImage('images/duck.png');
+  productImage[0]=loadImage('images/duck.png');
+  productImage[1]=loadImage('images/tinkebuCow.png');
+  productImage[2]=loadImage('images/bunny.png');
 }
 
 function setup() {
-  createCanvas(800,500);
+  createCanvas(windowWidth, windowWidth*8/16);
   offsetRef=height/2;
   // console.log(loadedData);
   // colorMode(HSB);
@@ -118,7 +120,7 @@ function Explorer(x,y,s){
 
   for(var i=0; i<n; i++){
     var p=new ExploreProduct(i,p5.Vector.add(origin,currentOffset), i*aStep,s*2,s*1,8);
-    p.assignProduct(productData, productImage);
+    p.assignProduct(productData[i], productImage[i]);
     productOptions.push(p);
     // productExplorer=new ProductExplorer(height/2,height/2,height*0.8, height,height*2/7,width*0.3, width*0.3);
     // productExplorer.assignProduct(null,productImage);
@@ -194,7 +196,7 @@ function Explorer(x,y,s){
 
 
     var hovered=false;
-    fill(hover?160:40);
+    fill(hover?200:140);
     noStroke();
     ellipse(origin.x+currentOffset.x,origin.y+currentOffset.y,s*2);
     stroke(40,160);
@@ -362,8 +364,15 @@ function Explorer(x,y,s){
       if(ma<0){
         ma=TWO_PI+ma;
       }
+      if(productRevealed && isSelected){
+        fill(0,0,80,0.7);
+        noStroke();
+        rectMode(CORNER);
+        rect(x1-s*0.1,y1-s*0.1,s*0.8,s*0.7);
+      }
       vrs.forEach(function(vr){
         vr.run(x0,y0,x1,y1,mouseX,mouseY,ma,md,scl, productRevealed, isSelected);
+
         vr.showFixtures();
       });
       blendMode(MULTIPLY);
@@ -375,7 +384,7 @@ function Explorer(x,y,s){
         imageMode(CENTER);
         image(productImage,x0,y0,s0/3,s0/3);
       }
-      if(productData && hover){
+      if(productData && (hover || (productRevealed && isSelected))){
         fill(0,180);
         noStroke();
         textFont('Homemade Apple');
