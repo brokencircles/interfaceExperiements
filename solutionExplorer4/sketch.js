@@ -370,11 +370,7 @@ function Explorer(x,y,s){
         rectMode(CORNER);
         rect(x1-s*0.1,y1-s*0.1,s*0.8,s*0.7);
       }
-      vrs.forEach(function(vr){
-        vr.run(x0,y0,x1,y1,mouseX,mouseY,ma,md,scl, productRevealed, isSelected);
 
-        vr.showFixtures();
-      });
       blendMode(MULTIPLY);
       vrs.forEach(function(vr){
         vr.showVals();
@@ -384,6 +380,11 @@ function Explorer(x,y,s){
         imageMode(CENTER);
         image(productImage,x0,y0,s0/3,s0/3);
       }
+      vrs.forEach(function(vr){
+        vr.run(x0,y0,x1,y1,mouseX,mouseY,ma,md,scl, productRevealed, isSelected);
+
+        vr.showFixtures();
+      });
       if(productData && (hover || (productRevealed && isSelected))){
         fill(0,180);
         noStroke();
@@ -419,6 +420,11 @@ function Explorer(x,y,s){
     var open=0;
     var productRevealed=false;
     var isSelected=false;
+
+    var factoids=[];
+    factoids.push(new Factoid(x,y,s,0.2,sa+aStep*0.1, "a fact"));
+    factoids.push(new Factoid(x,y,s,0.8,sa+aStep*0.5, "my other fact"));
+    factoids.push(new Factoid(x,y,s,0.5,sa+aStep*0.9, "not true at all, but longer"));
 
     for(var i=0; i<pointsPerSeg; i++){
       var n=noise(nxOff+i/10,y1)-0.5;
@@ -476,30 +482,6 @@ function Explorer(x,y,s){
 
     this.showFixtures=function(){
       textFont('Homemade Apple');
-      push();
-      translate(x,y);
-      rotate(a);
-      stroke(cHue,40,60);
-      strokeWeight(s*(hover?0.02:0.005));
-      noFill();
-      beginShape();
-      vertex(r,0);
-      bezierVertex(r,c, c,r, 0,r);
-      bezierVertex(-c,r ,-r,c, -r,0);
-      bezierVertex(-r,-c, -c,-mr, 0,-mr);
-      bezierVertex(c,-mr, r,-c, r,0);
-      endShape();
-      noStroke();
-      fill(0,0,0);
-      noStroke();
-      if(hover && productRevealed && isSelected){
-        textAlign(CENTER, CENTER);
-        textSize(s*0.1);
-        text(nf(val*5,1,1),0,-r*1.7);
-        textSize(s*0.08);
-        text(label,0,-r*1.4);
-      }
-      pop();
       if(productRevealed && isSelected){
         push();
         translate(x1,y1);
@@ -523,6 +505,37 @@ function Explorer(x,y,s){
         text(label,vertsLine[0].x, vertsLine[0].y-s*0.05);
         pop();
       }
+      push();
+      translate(x,y);
+      rotate(a);
+      stroke(cHue,40,60);
+      strokeWeight(s*(hover?0.02:0.005));
+      noFill();
+      beginShape();
+      vertex(r,0);
+      bezierVertex(r,c, c,r, 0,r);
+      bezierVertex(-c,r ,-r,c, -r,0);
+      bezierVertex(-r,-c, -c,-mr, 0,-mr);
+      bezierVertex(c,-mr, r,-c, r,0);
+      endShape();
+      noStroke();
+      fill(0,0,0);
+      noStroke();
+      if(hover && productRevealed && isSelected){
+        textAlign(CENTER, CENTER);
+        textSize(s*0.1);
+        text(nf(val*5,1,1),0,-r*1.7);
+        textSize(s*0.08);
+        text(label,0,-r*1.4);
+      }
+
+      pop();
+      factoids.forEach(function(factoid){
+        factoid.run(productRevealed && isSelected && hover);
+        factoid.show(x,y);
+      });
+
+
     };
 
     this.showVals=function(){
@@ -576,7 +589,82 @@ function Explorer(x,y,s){
 
   }
 
+  function Factoid(x,y,s,relR,a,fact){
+    var r=s/2+relR*s/2;
+    var unfurl=0;
+    var ufRate=0.05;
+    var vertsLine=[];
+    var nxOff=random(10);
+    var drift=s*0.1;
+    textFont("Homemade Apple");
+    textSize(s*0.07);
+    var tw=textWidth(fact);
+    var l=s*0.5+tw*1.5;//s*1.5;
+    var pointsPerSeg=floor(10*l/s*3);
 
+    var aDriftRange=0.4;
+    var aDrift=0;
+    var aDriftRate=random(30,100);
+
+    for(var i=0; i<pointsPerSeg; i++){
+      var n=noise(nxOff+i/10,y)-0.5;
+      vertsLine.push({x:i*l/pointsPerSeg, y:0+drift*n});
+    }
+
+    this.run=function(hover){
+      if(unfurl>0){
+        aDrift=(noise(nxOff+0-frameCount/50)-0.5)*aDriftRange;
+        for(var i=0; i<pointsPerSeg; i++){
+          var n=noise(nxOff+i/10-frameCount/50,y)-0.5;
+          vertsLine[i]={x:i*l/pointsPerSeg, y:0+drift*n};
+        }
+      }
+      if(hover){
+        if(unfurl<1){
+          unfurl+=ufRate;
+        } else {
+          unfurl=1;
+        }
+      } else {
+        if(unfurl>0){
+          unfurl-=ufRate*2;
+        } else {
+          unfurl=0;
+        }
+      }
+    };
+
+    this.show=function(x,y){
+      push();
+      translate(x,y);
+      rotate(-PI/2+a);
+      translate(r,0);
+      // fill(128);
+      // noStroke();
+      // ellipse(0,0,s*0.2);
+      if(unfurl>0){
+        stroke(0,0,20,0.7);
+        noFill();
+        strokeWeight(s*0.15);
+        strokeCap(SQUARE);
+        rotate(-a+PI/2-PI/20+aDrift);
+        // line(0,0,l*unfurl,0);
+        scale(unfurl,1);
+        beginShape();
+        vertsLine.forEach(function(v){
+          vertex(v.x, v.y);
+        });
+        endShape();
+        noStroke();
+        fill(0,0,100);
+        textFont("Homemade Apple");
+        textSize(s*0.07);
+        textAlign(LEFT,CENTER);
+        text(fact,s*0.2,0);
+      }
+      pop();
+    };
+  }
 //   function Aspect(id,a,aSpan,s){
 //     this.a=a;
 //     var labels=["social","hackable","repairable","material","manufacture","end of life","regenerate","waste"];
