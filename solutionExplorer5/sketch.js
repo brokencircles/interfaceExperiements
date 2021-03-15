@@ -1,36 +1,37 @@
 
 
-const SELECTOR=0;
-const SOLUTION=1;
-const ASPECT=2;
-const FEATURE=3;
-
-const FULL=0;
-const PARTIAL=1;
-const HIDDEN=2;
+// const SELECTOR=0;
+// const SOLUTION=1;
+// const ASPECT=2;
+// const FEATURE=3;
+//
+// const FULL=0;
+// const PARTIAL=1;
+// const HIDDEN=2;
 
 var space;
 
 // var displayFont="Homemade Apple";
 var displayFont="Barriecito";
 
-var context=SELECTOR;
+// var context=SELECTOR;
 var selector, solution;
 var loadedData;
 var explorer;
 var offsetRef=0;
 
 var productImage=[];
-var productData=[{name:"toy duck"},{name:"wood+wool cow"}, {name:"knitted bunny"}];
+var productData=pd;
+// var productData=[{name:"toy duck"},{name:"wood+wool cow"}, {name:"knitted bunny"}];
 // var productExplorer;
 var productAspects=["materials","manufacture","useful life", "hackable", "repairable", "reuse", "retained value","price"];
 
 
 function preload(){
   // loadedData=loadJSON('data.json');
-  productImage[0]=loadImage('images/duck.png');
-  productImage[1]=loadImage('images/tinkebuCow.png');
-  productImage[2]=loadImage('images/bunny.png');
+  // productImage[0]=loadImage('images/duck.png');
+  // productImage[1]=loadImage('images/tinkebuCow.png');
+  // productImage[2]=loadImage('images/bunny.png');
 }
 
 function setup() {
@@ -101,7 +102,7 @@ function Explorer(x,y,s){
   var targetA=0;
   var rot=0;//PI/500;
   var currentScale=1;
-  var targetScale=1;
+  var targetScale=1.2;
   var productOptions=[];
   var aStep=TWO_PI/n;
   var hover=false;
@@ -110,6 +111,7 @@ function Explorer(x,y,s){
   var ringVerts=[];
   var numVerts=50;
   var noiseFactor=0.2;
+  var ease=14;
 
   var ringAStep=TWO_PI/numVerts;
   for(var i=0; i<numVerts*3; i++){
@@ -120,11 +122,19 @@ function Explorer(x,y,s){
     vy=x+sin(i*ringAStep)*s*(0.9+nv*0.2)*2;
     ringVerts.push({x:vx, y:vy});
   }
-
+  // var imgs=[];
+  var loadedImages=0;
   for(var i=0; i<n; i++){
     var p=new ExploreProduct(i,p5.Vector.add(origin,currentOffset), i*aStep,s*2,s*1,8);
-    p.assignProduct(productData[i], productImage[i]);
+    p.assignProduct(pd.data.productData[i],"images/"+pd.data.productData[i].imageFile+".png");
     productOptions.push(p);
+    console.log(pd.data.productData[i].imageFile+".png");
+    // loadImage("images/"+pd.data.productData[i].imageFile+".png", function(img){
+    //   productOptions[loadedImages].assignProduct(pd.data.productData[loadedImages], img);
+    //   loadedImages++
+    // });
+    // p.assignProduct(pd.data.productData[i], pd.data.productData[i].imageFile+".png");
+    // productOptions.push(p);
     // productExplorer=new ProductExplorer(height/2,height/2,height*0.8, height,height*2/7,width*0.3, width*0.3);
     // productExplorer.assignProduct(null,productImage);
   }
@@ -134,7 +144,7 @@ function Explorer(x,y,s){
     if(hover){
       targetOffset=createVector(0,0);
       targetA=0;
-      targetScale=1;
+      targetScale=1.2;
       productOptions.forEach(function(option,i){
         option.isSelected=false;
       });
@@ -163,8 +173,10 @@ function Explorer(x,y,s){
   this.run=function(){
     productRevealed=false;
     var diffScl=targetScale-currentScale;
-    if(abs(diffScl)>0.0001){
-      currentScale+=diffScl/20;
+    if(abs(diffScl)>0.01){
+      currentScale+=diffScl/ease;
+    } else {
+      currentScale=targetScale;
     }
     productRevealed=targetScale==4 && abs(diffScl)<0.5;
     var diff=p5.Vector.sub(targetOffset,currentOffset);
@@ -174,8 +186,10 @@ function Explorer(x,y,s){
     }
     var diffA=wrapAtPi(targetA-currentA);
     // console.log(diffA);
-    if(abs(diffA)>0.00001){
-      currentA+=diffA/20;//=(currentA+TWO_PI+diffA/20)%TWO_PI;
+    if(abs(diffA)>0.001){
+      currentA+=diffA/ease;//=(currentA+TWO_PI+diffA/20)%TWO_PI;
+    } else {
+      currentA=targetA;
     }
     hover=dist(mouseX, mouseY,transform(origin.x+currentOffset.x,offsetRef,currentScale),transform(origin.y+currentOffset.y,height/2,currentScale))<s*currentScale;
     // console.log(productRevealed);
@@ -287,8 +301,10 @@ function Explorer(x,y,s){
       this.currY=this.origin.y+sin(givenA+this.a)*this.l;
       this.hover=dist(mouseX, mouseY, transform(this.currX, offsetRef,scl), transform(this.currY,height/2,scl))<s*scl/2;
       var diffA=targetA-currentA;
-      if(abs(diffA)>0.0001){
-        currentA+=diffA/20;
+      if(abs(diffA)>0.001){
+        currentA+=diffA/ease;
+      } else {
+        currentA=targetA;
       }
     };
 
@@ -345,19 +361,28 @@ function Explorer(x,y,s){
       vrs.push(new ValueRing(i, i/numVals,ox, oy,s0/2,(0.5+i)*aStep,aStep,productAspects[i],x1,y1+i*yStep1,w1));
     }
 
+    var productImagePath=null;
     var productImage=null;
     var productData=null;
 
     this.assignProduct=function(data,img){
-      productImage=img;
-      productData=data
+      productImagePath=img;
+      productData=data;
+      loadImage(productImagePath, function(img){
+        productImage=img;
+      });
+      var raKeys=Object.keys(productData.ratedAspects);
+      raKeys.forEach(function(rak,i){
+        vrs[i].assignData(rak,productData.ratedAspects[rak]);
+        // console.log(rak,productData.ratedAspects[rak]);
+      });
     }
 
     this.show=function(cx,cy,scl,productRevealed, isSelected, hover){
       ox=x0=cx;
       oy=y0=cy;
-      x1=x0+s/2;
-      y1=y0;
+      x1=x0+s;
+      y1=y0-s/4;
       colorMode(HSB);
       // background(0,0,90);
       blendMode(BLEND);
@@ -394,7 +419,7 @@ function Explorer(x,y,s){
         textFont(displayFont);
         textSize(s0/6);
         textAlign(CENTER,CENTER);
-        text(productData.name,x1,y1-s0/2);
+        text(productData.productName,x1,y1-s0/2);
       }
       colorMode(RGB);
 
@@ -403,10 +428,10 @@ function Explorer(x,y,s){
 
   function ValueRing(id,rel,x,y,s,a,aStep,label,x1,y1,l1){
     // console.log(y1);
-    var val=random();
+    var val=0;//random();
     var r=s/2;
     var c=r*0.55;
-    var er=r+r*val
+    var er=r+r*val;
     var mr=r*2;
     var cHue=rel*360;
     var nxOff=random(10);
@@ -423,52 +448,109 @@ function Explorer(x,y,s){
     var open=0;
     var productRevealed=false;
     var isSelected=false;
+    var aspectData=null;
 
     var factoids=[];
-    factoids.push(new Factoid(x,y,s,0.2,sa+aStep*0.1, "a fact"));
-    factoids.push(new Factoid(x,y,s,0.8,sa+aStep*0.5, "my other fact"));
-    factoids.push(new Factoid(x,y,s,0.5,sa+aStep*0.9, "not true at all, but longer"));
+    // factoids.push(new Factoid(x,y,s,0.2,sa+aStep*0.1, "a fact"));
+    // factoids.push(new Factoid(x,y,s,0.8,sa+aStep*0.5, "my other fact"));
+    // factoids.push(new Factoid(x,y,s,0.5,sa+aStep*0.9, "not true at all, but longer"));
 
-    for(var i=0; i<pointsPerSeg; i++){
-      var n=noise(nxOff+i/10,y1)-0.5;
-      vertsLine.push({x:i*l1/pointsPerSeg, y:y1+drift*n});
-    }
+    // for(var i=0; i<pointsPerSeg; i++){
+    //   var n=noise(nxOff+i/10,y1)-0.5;
+    //   vertsLine.push({x:i*l1/pointsPerSeg, y:y1+drift*n});
+    // }
+    //
+    // for(var i=0; i<pointsPerSeg; i++){
+    //   var px=bezierPoint(r,r,c,0,i/pointsPerSeg);
+    //   var py=bezierPoint(0,c,r,r,i/pointsPerSeg);
+    //   verts.push({x:px, y:py});
+    // }
+    // for(var i=0; i<pointsPerSeg; i++){
+    //   var px=bezierPoint(0,-c,-r,-r,i/pointsPerSeg);
+    //   var py=bezierPoint(r,r,c,0,i/pointsPerSeg);
+    //   verts.push({x:px, y:py});
+    // }
+    // for(var i=0; i<pointsPerSeg; i++){
+    //   var px=bezierPoint(-r,-r,-c,0,i/pointsPerSeg);
+    //   var py=bezierPoint(0,-c,-er,-er,i/pointsPerSeg);
+    //   verts.push({x:px, y:py});
+    // }
+    // for(var i=0; i<pointsPerSeg; i++){
+    //   var px=bezierPoint(0,c,r,r,i/pointsPerSeg);
+    //   var py=bezierPoint(-er,-er,-c,0,i/pointsPerSeg);
+    //   verts.push({x:px, y:py});
+    // }
+    // verts.forEach(function(v){
+    //   var nx=noise(nxOff+v.x/(10*noiseStep),v.y/(10*noiseStep))-0.5;
+    //   var ny=noise(nyOff+v.x/(8*noiseStep),v.y/(7*noiseStep))-0.5;
+    //   v.x+=nx*drift;
+    //   v.y+=ny*drift;
+    // });
+    // var aStep=TWO_PI/pointsPerSeg;
+    // var ir=r*0.9;
+    // for(var i=0; i<pointsPerSeg; i++){
+    //   var px=x+cos(i*aStep)*ir;
+    //   var py=y+sin(i*aStep)*ir;
+    //   var n=noise(nxOff+px/noiseStep, nyOff+py/noiseStep-0.5);
+    //   px=cos(TWO_PI-i*aStep)*ir*(0.9+0.2*n);
+    //   py=sin(TWO_PI-i*aStep)*ir*(0.9+0.2*n);
+    //   iVerts.push({x:px, y:py});
+    // }
 
-    for(var i=0; i<pointsPerSeg; i++){
-      var px=bezierPoint(r,r,c,0,i/pointsPerSeg);
-      var py=bezierPoint(0,c,r,r,i/pointsPerSeg);
-      verts.push({x:px, y:py});
-    }
-    for(var i=0; i<pointsPerSeg; i++){
-      var px=bezierPoint(0,-c,-r,-r,i/pointsPerSeg);
-      var py=bezierPoint(r,r,c,0,i/pointsPerSeg);
-      verts.push({x:px, y:py});
-    }
-    for(var i=0; i<pointsPerSeg; i++){
-      var px=bezierPoint(-r,-r,-c,0,i/pointsPerSeg);
-      var py=bezierPoint(0,-c,-er,-er,i/pointsPerSeg);
-      verts.push({x:px, y:py});
-    }
-    for(var i=0; i<pointsPerSeg; i++){
-      var px=bezierPoint(0,c,r,r,i/pointsPerSeg);
-      var py=bezierPoint(-er,-er,-c,0,i/pointsPerSeg);
-      verts.push({x:px, y:py});
-    }
-    verts.forEach(function(v){
-      var nx=noise(nxOff+v.x/(10*noiseStep),v.y/(10*noiseStep))-0.5;
-      var ny=noise(nyOff+v.x/(8*noiseStep),v.y/(7*noiseStep))-0.5;
-      v.x+=nx*drift;
-      v.y+=ny*drift;
-    });
-    var aStep=TWO_PI/pointsPerSeg;
-    var ir=r*0.9;
-    for(var i=0; i<pointsPerSeg; i++){
-      var px=x+cos(i*aStep)*ir;
-      var py=y+sin(i*aStep)*ir;
-      var n=noise(nxOff+px/noiseStep, nyOff+py/noiseStep-0.5);
-      px=cos(TWO_PI-i*aStep)*ir*(0.9+0.2*n);
-      py=sin(TWO_PI-i*aStep)*ir*(0.9+0.2*n);
-      iVerts.push({x:px, y:py});
+    this.assignData=function(lab,data){
+      val=data.rating/5;
+      label=lab;
+      data.features.forEach(function(f,i){
+        if(i<3){
+          factoids.push(new Factoid(x,y,s,0.2+i*0.3,sa+aStep*0.1+i*0.4, f));
+        }
+      });
+      buildVerts();
+    };
+
+    function buildVerts(){
+      er=r+r*val;
+      for(var i=0; i<pointsPerSeg; i++){
+        var n=noise(nxOff+i/10,y1)-0.5;
+        vertsLine.push({x:i*l1/pointsPerSeg, y:y1+drift*n});
+      }
+
+      for(var i=0; i<pointsPerSeg; i++){
+        var px=bezierPoint(r,r,c,0,i/pointsPerSeg);
+        var py=bezierPoint(0,c,r,r,i/pointsPerSeg);
+        verts.push({x:px, y:py});
+      }
+      for(var i=0; i<pointsPerSeg; i++){
+        var px=bezierPoint(0,-c,-r,-r,i/pointsPerSeg);
+        var py=bezierPoint(r,r,c,0,i/pointsPerSeg);
+        verts.push({x:px, y:py});
+      }
+      for(var i=0; i<pointsPerSeg; i++){
+        var px=bezierPoint(-r,-r,-c,0,i/pointsPerSeg);
+        var py=bezierPoint(0,-c,-er,-er,i/pointsPerSeg);
+        verts.push({x:px, y:py});
+      }
+      for(var i=0; i<pointsPerSeg; i++){
+        var px=bezierPoint(0,c,r,r,i/pointsPerSeg);
+        var py=bezierPoint(-er,-er,-c,0,i/pointsPerSeg);
+        verts.push({x:px, y:py});
+      }
+      verts.forEach(function(v){
+        var nx=noise(nxOff+v.x/(10*noiseStep),v.y/(10*noiseStep))-0.5;
+        var ny=noise(nyOff+v.x/(8*noiseStep),v.y/(7*noiseStep))-0.5;
+        v.x+=nx*drift;
+        v.y+=ny*drift;
+      });
+      var aStep=TWO_PI/pointsPerSeg;
+      var ir=r*0.9;
+      for(var i=0; i<pointsPerSeg; i++){
+        var px=x+cos(i*aStep)*ir;
+        var py=y+sin(i*aStep)*ir;
+        var n=noise(nxOff+px/noiseStep, nyOff+py/noiseStep-0.5);
+        px=cos(TWO_PI-i*aStep)*ir*(0.9+0.2*n);
+        py=sin(TWO_PI-i*aStep)*ir*(0.9+0.2*n);
+        iVerts.push({x:px, y:py});
+      }
     }
 
     this.run=function(cx,cy,lx,ly,mx,my,ma,md,scl, revealed, selected){
@@ -542,38 +624,37 @@ function Explorer(x,y,s){
     };
 
     this.showVals=function(){
-      // val=sin(a+frameCount*PI/100)*0.5+0.5;
-      // er=r+r*val;
-      push();
-      translate(x,y);
-      rotate(a);
-      // stroke(cHue,40,60);
-      // strokeWeight(1);
-      // noFill();
-      // beginShape();
-      // vertex(r,0);
-      // bezierVertex(r,c, c,r, 0,r);
-      // bezierVertex(-c,r ,-r,c, -r,0);
-      // bezierVertex(-r,-c, -c,-mr, 0,-mr);
-      // bezierVertex(c,-mr, r,-c, r,0);
-      // endShape();
-      noStroke();
-      // strokeWeight(s*0.05);
-      fill(cHue,70,hover?100:80,hover?1:0.3);
 
-      beginShape();
-      verts.forEach(function(v){
-        vertex(v.x, v.y);
-      });
-      beginContour();
-      iVerts.forEach(function(iv){
-        vertex(iv.x, iv.y);
-      });
-      endContour();
-      endShape();
-
-      pop();
       if(productRevealed && isSelected){
+        push();
+        translate(x,y);
+        rotate(a);
+        // stroke(cHue,40,60);
+        // strokeWeight(1);
+        // noFill();
+        // beginShape();
+        // vertex(r,0);
+        // bezierVertex(r,c, c,r, 0,r);
+        // bezierVertex(-c,r ,-r,c, -r,0);
+        // bezierVertex(-r,-c, -c,-mr, 0,-mr);
+        // bezierVertex(c,-mr, r,-c, r,0);
+        // endShape();
+        noStroke();
+        // strokeWeight(s*0.05);
+        fill(cHue,70,hover?100:80,hover?1:0.3);
+
+        beginShape();
+        verts.forEach(function(v){
+          vertex(v.x, v.y);
+        });
+        beginContour();
+        iVerts.forEach(function(iv){
+          vertex(iv.x, iv.y);
+        });
+        endContour();
+        endShape();
+
+        pop();
         push();
         translate(x1,y1);
         stroke(cHue,hover?70:50,hover?100:70,1);
