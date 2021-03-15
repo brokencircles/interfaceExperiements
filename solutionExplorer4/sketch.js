@@ -11,6 +11,9 @@ const HIDDEN=2;
 
 var space;
 
+// var displayFont="Homemade Apple";
+var displayFont="Barriecito";
+
 var context=SELECTOR;
 var selector, solution;
 var loadedData;
@@ -210,7 +213,7 @@ function Explorer(x,y,s){
     // ellipse(origin.x+currentOffset.x,origin.y+currentOffset.y,s*2*2);
     fill(hover?0:255);
     noStroke();
-    textFont('Homemade Apple');
+    textFont(displayFont);
     textSize(s/1);
     textAlign(CENTER, CENTER);
     text('toy',origin.x+currentOffset.x,origin.y+currentOffset.y);
@@ -388,7 +391,7 @@ function Explorer(x,y,s){
       if(productData && (hover || (productRevealed && isSelected))){
         fill(0,180);
         noStroke();
-        textFont('Homemade Apple');
+        textFont(displayFont);
         textSize(s0/6);
         textAlign(CENTER,CENTER);
         text(productData.name,x1,y1-s0/2);
@@ -481,7 +484,7 @@ function Explorer(x,y,s){
     };
 
     this.showFixtures=function(){
-      textFont('Homemade Apple');
+      textFont(displayFont);
       if(productRevealed && isSelected){
         push();
         translate(x1,y1);
@@ -592,11 +595,11 @@ function Explorer(x,y,s){
   function Factoid(x,y,s,relR,a,fact){
     var r=s/2+relR*s/2;
     var unfurl=0;
-    var ufRate=0.05;
+    var ufRate=0.2;
     var vertsLine=[];
     var nxOff=random(10);
     var drift=s*0.1;
-    textFont("Homemade Apple");
+    textFont(displayFont);
     textSize(s*0.07);
     var tw=textWidth(fact);
     var l=s*0.5+tw*1.5;//s*1.5;
@@ -657,7 +660,7 @@ function Explorer(x,y,s){
         endShape();
         noStroke();
         fill(0,0,100);
-        textFont("Homemade Apple");
+        textFont(displayFont);
         textSize(s*0.07);
         textAlign(LEFT,CENTER);
         text(fact,s*0.2,0);
