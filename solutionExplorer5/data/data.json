@@ -1,0 +1,225 @@
+{"productData":[
+  {
+    "productID": 100001,
+    "productName": "rubber duck",
+    "productDescription": "it's just a duck made of rubber",
+    "imageFile":"rubberDuck",
+    "class":"toy",
+    "ratedAspects":{
+      "material": {
+        "rating": 1,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "manufacture": {
+        "rating": 0,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "usefulLife": {
+        "rating": 2.5,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "hackable": {
+        "rating": 3,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "repairable": {
+        "rating": 1,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "disposal": {
+        "rating": 0,
+        "features":[]
+      },
+      "value": {
+        "rating": 2,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "social": {
+        "rating": 2,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      }
+    },
+    "timeline":{
+      "material":{
+        "image":"noimage",
+        "text":["PVC can be recycled a maximum of seven times","Chemical recycling uses other virgin chemicals"]
+      },
+      "manufacture":{
+        "image":"noimage",
+        "text":["17 litres of water are used for each duck", "Chemical dyes can cause damanging pollution"]
+      },
+      "distribution":{
+        "image":"noimage",
+        "text":["Typically made in Far East Asia and shipped globally","Distribution paths are rarely optimal"]
+      },
+      "useful life":{
+        "image":"noimage",
+        "text":["A rubber or plastic duck will last a long time","It can bring joy to many owners, if well looked after"]
+      },
+      "hackability":{
+        "image":"noimage",
+        "text":["There are no easy alternative uses for the duck or its components"]
+      },
+      "repairability":{
+        "image":"noimage",
+        "text":["A plastic dusck cannot be reapired simply or economically"]
+      },
+      "reuse":{
+        "image":"noimage",
+        "text":["The best option for an unwanted duck is a donation to a second user market"]
+      },
+      "disposal":{
+        "image":"noimage",
+        "text":["The duck should be disposed of in plastic recycling","Sadly, it most probably will not be remanufactured and will becoem a problem waste plastic"]
+      }
+    }
+  },{
+    "productID": 100002,
+    "productName": "woollen rabbit",
+    "productDescription": "it's a small rabbit, knitted in wool",
+    "imageFile":"woolRabbit",
+    "class":"toy",
+    "ratedAspects":{
+      "material": {
+        "rating": 4.5,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "manufacture": {
+        "rating": 1.5,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "usefulLife": {
+        "rating": 2,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "hackable": {
+        "rating": 1.2,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "repairable": {
+        "rating": 3,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "disposal": {
+        "rating": 4.2,
+        "features":[]
+      },
+      "value": {
+        "rating": 3,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "social": {
+        "rating": 2,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      }
+    },
+    "timeline":{
+      "material":{
+        "image":"noimage",
+        "text":["Wool is naturally sustainable","It can be reused as yarn, or used in insulation and other products"]
+      },
+      "manufacture":{
+        "image":"noimage",
+        "text":["Making dyed yarn can use a lot of water", "hand knitting makes each product unique"]
+      },
+      "distribution":{
+        "image":"noimage",
+        "text":["Mostly made for a local, domestic market","The open source patterns can be used by anyone anywhere"]
+      },
+      "useful life":{
+        "image":"noimage",
+        "text":["Wool is hard wearing but can be difficult to wash without loss of shape","If occasionally cleaned carefullyit can last a long time"]
+      },
+      "hackability":{
+        "image":"noimage",
+        "text":["The yarn can be put to other uses"]
+      },
+      "repairability":{
+        "image":"noimage",
+        "text":["Small holes can be darned with similar (or different) yarn"]
+      },
+      "reuse":{
+        "image":"noimage",
+        "text":["The toy can be passed to others or donated"]
+      },
+      "disposal":{
+        "image":"noimage",
+        "text":["Wool should find other uses","If disposed of as waste it will biodegrade"]
+      }
+    }
+  },{
+    "productID": 100003,
+    "productName": "wooden cow",
+    "productDescription": "a wood cow on wheels, with wool fur",
+    "imageFile":"woodenCow",
+    "class":"toy",
+    "ratedAspects":{
+      "material": {
+        "rating": 2.8,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "manufacture": {
+        "rating": 1.7,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "usefulLife": {
+        "rating": 1.5,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "hackable": {
+        "rating": 2.1,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "repairable": {
+        "rating": 2.1,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "disposal": {
+        "rating": 3.4,
+        "features":[]
+      },
+      "value": {
+        "rating": 3.5,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      },
+      "social": {
+        "rating": 4.1,
+        "features":["likes cats","purple","wakes early","loves toast"]
+      }
+    },
+    "timeline":{
+      "material":{
+        "image":"noimage",
+        "text":["The wood is sustainable","Tree planting is supported with each purchase"]
+      },
+      "manufacture":{
+        "image":"noimage",
+        "text":["Hand made in small batches", "all waste is used in the neighboruing farm"]
+      },
+      "distribution":{
+        "image":"noimage",
+        "text":["Mostly made for a local, domestic market","Never shipped by air freight"]
+      },
+      "useful life":{
+        "image":"noimage",
+        "text":["The design is very robust","It can bring joy to many owners"]
+      },
+      "hackability":{
+        "image":"noimage",
+        "text":["not easily hackable for other uses"]
+      },
+      "repairability":{
+        "image":"noimage",
+        "text":["Wheels and fur outer can be replaced", "The wood can survive rough handling"]
+      },
+      "reuse":{
+        "image":"noimage",
+        "text":["The toy can be passed to others or donated"]
+      },
+      "disposal":{
+        "image":"noimage",
+        "text":["Wool and wood should find other uses is recycled properly","If disposed of as waste it will biodegrade"]
+      }
+    }
+  }
+]}

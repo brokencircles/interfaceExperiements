@@ -27,7 +27,7 @@ var productAspects=["materials","manufacture","useful life", "hackable", "repair
 
 
 function preload(){
-  loadedData=loadJSON('data.json');
+  // loadedData=loadJSON('data.json');
   productImage[0]=loadImage('images/duck.png');
   productImage[1]=loadImage('images/tinkebuCow.png');
   productImage[2]=loadImage('images/bunny.png');
