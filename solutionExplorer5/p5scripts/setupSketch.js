@@ -116,17 +116,19 @@ var p5Instances=[];
 p5Preloader=new p5(P5Preloader);
 
 p5Instances[0] = new p5(sketchWrapper);
-p5Instances[0].div='p5sketch1';
-p5Instances[1] = new p5(sketchWrapper);
-p5Instances[1].div='p5sketch2';
-p5Instances[2] = new p5(sketchWrapper);
-p5Instances[2].div='p5sketch3';
-p5Instances[3] = new p5(sketchWrapper);
-p5Instances[3].div='p5sketch4';
-p5Instances[4] = new p5(sketchWrapper);
-p5Instances[4].div='p5sketch5';
-p5Instances[5] = new p5(sketchWrapper);
-p5Instances[5].div='p5sketch6';
+p5Instances[0].div='p5sketch6';
+// p5Instances[0] = new p5(sketchWrapper);
+// p5Instances[0].div='p5sketch1';
+// p5Instances[1] = new p5(sketchWrapper);
+// p5Instances[1].div='p5sketch2';
+// p5Instances[2] = new p5(sketchWrapper);
+// p5Instances[2].div='p5sketch3';
+// p5Instances[3] = new p5(sketchWrapper);
+// p5Instances[3].div='p5sketch4';
+// p5Instances[4] = new p5(sketchWrapper);
+// p5Instances[4].div='p5sketch5';
+// p5Instances[5] = new p5(sketchWrapper);
+// p5Instances[5].div='p5sketch6';
 
 
 var stopAll=function(){

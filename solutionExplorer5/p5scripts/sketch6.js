@@ -1,7 +1,7 @@
 function Sketch6(sketch, param, divName){
     //sketch is the p5 instance passed in
     //param is the parameter picked up from the dive attribute to give some control over how this instance runs
-  
+
     var cnv, cnvBounds, canvStart, canvEnd;
     var cnvX, cnvY, cnvW, cnvH;
     var cnvAspect=1/1;
@@ -11,19 +11,19 @@ function Sketch6(sketch, param, divName){
     var localAssetPath="./assets/";
     var hostedAssetPath="";
     //end generic vars
-  
+
     var sketch6MainObject;
       // var scl=0.01;
     var myDiv;
     var currentNeed;
     var currentChoice;
     var currentChoiceNum,prevChoiceNum;
-  
+
     this.preload=function(){
       console.log('sketch6 preload');
       // sketchPreload();
     }
-  
+
     this.setup=function(){
       console.log('p5sketch6 setup with param: '+param);
       myDiv=sketch.select("#"+divName);
@@ -38,18 +38,21 @@ function Sketch6(sketch, param, divName){
       } else {
         assetPath=localAssetPath;
       }
+      console.log("!!! "+myDiv.width);
       setupCanvas(); //works out optimal x,y,w,h based on available window size, aspect and cnvHMax
       console.log(cnvW+" "+ cnvH);
       cnv=sketch.createCanvas(cnvW, cnvH);
       cnv.parent(divName);
       setupCanvasPost();
+      console.log("!!! "+myDiv.width);
+
       //end generic setup
-  
+
       //do other setup
       sketch6MainObject=new Sketch6MainObject(sketch, null);
         sketch6MainObject.setup(currentChoice);
     };
-  
+
     this.windowResized=function(){
       setupCanvas();
       sketch.resizeCanvas(cnvW, cnvH);
@@ -58,41 +61,60 @@ function Sketch6(sketch, param, divName){
         sketch6MainObject.windowResized();
       }
     }
-  
+
     function setupCanvas(){
       if(true){
-        if(sketch.windowWidth<sketch.windowHeight*cnvAspect){
-          cnvW=sketch.windowWidth;
+        // if(sketch.windowWidth<sketch.windowHeight*cnvAspect){
+        //   cnvW=sketch.windowWidth;
+        //   cnvH=cnvW/cnvAspect;
+        //   cnvX=0;
+        //   cnvY=(sketch.windowHeight-cnvH)/2;
+        // } else {
+        //   cnvH=sketch.windowHeight;
+        //   cnvW=cnvH*cnvAspect;
+        //   cnvX=(sketch.windowWidth-cnvW)/2;
+        //   cnvY=0;
+        // }
+        // if(cnvH>cnvHMax){
+        //   cnvY=(cnvH-cnvHMax)/2;
+        //   cnvH=cnvHMax;
+        //   cnvW=cnvH*cnvAspect;
+        //   cnvX=(sketch.windowWidth-cnvW)/2;
+        // }
+
+        if(myDiv.width<myDiv.height*cnvAspect){
+          cnvW=myDiv.width;
           cnvH=cnvW/cnvAspect;
           cnvX=0;
-          cnvY=(sketch.windowHeight-cnvH)/2;
+          cnvY=(myDiv.height-cnvH)/2;
         } else {
-          cnvH=sketch.windowHeight;
+          cnvH=myDiv.height;
           cnvW=cnvH*cnvAspect;
-          cnvX=(sketch.windowWidth-cnvW)/2;
+          cnvX=(myDiv.width-cnvW)/2;
           cnvY=0;
         }
+
         if(cnvH>cnvHMax){
           cnvY=(cnvH-cnvHMax)/2;
           cnvH=cnvHMax;
           cnvW=cnvH*cnvAspect;
-          cnvX=(sketch.windowWidth-cnvW)/2;
+          cnvX=(myDiv.width-cnvW)/2;
         }
         cnvX+=cnvW*0.01;
         cnvY+=cnvH*0.01;
         cnvH*=0.98;
         cnvW*=0.98;
       }
-  
+
     }
-  
+
     function setupCanvasPost(){
       cnvBounds=cnv.canvas.getBoundingClientRect();
       var yOff=window.pageYOffset;
       canvStart = yOff+cnvBounds.top;
       canvEnd = yOff+cnvBounds.bottom;
     }
-  
+
     this.draw=function(scrY){
       sketch.background(100,125,150);
       // param=myDiv.attribute('data-param');
@@ -105,7 +127,7 @@ function Sketch6(sketch, param, divName){
         drawNotFullyInView();
       }
     };
-  
+
     function drawNotFullyInView(){
       sketch.background(255,135,30);
       sketch.translate(sketch.width/2, sketch.height/2);
@@ -116,19 +138,19 @@ function Sketch6(sketch, param, divName){
       sketch.fill(100);
       sketch.text(message,-mw/2,0);
     }
-  
+
     this.stop=function(){
       sketch.noLoop();
     };
-  
+
     this.start=function(){
       sketch.loop();
     };
-  
+
     this.mouseMoved=function(){
       sketch6MainObject.mouseMoved();
     }
-  
+
     this.mouseClicked=function(){
       currentNeed=myDiv.attribute('data-need');
       console.log('current need: '+currentNeed);
@@ -142,36 +164,36 @@ function Sketch6(sketch, param, divName){
       }
       prevChoiceNum=currentChoiceNum;
     }
-  
+
     this.mouseDragged=function(){
       // sketch1MainObject.mouseDragged();
     }
-  
+
     this.keyPressed=function(){
       // sketch1MainObject.keyPressed();
     }
-  
+
     // function sketchPreload(){
     //   dopreload();
     // }
-  
+
     // function sketchSetup(){
     //   dosetup();
     // }
-  
+
     // function sketchDraw(){
     //   retinaRings.draw();
     // }
-  
+
     // function dosetup(){
     // 	retinaRings=new RetinaSim(blobData, pics, sketch);
     // 	retinaRings.setup();
     // }
-  
+
     // function dodraw(){
     // 	retinaRings.draw();
     // }
-  
+
     // function domouseMoved(){
     // 	sketch1MainObject.mouseMoved();
     // }
@@ -184,26 +206,26 @@ function Sketch6(sketch, param, divName){
     // 	retinaRings.mouseDragged();
     // }
   }
-  
-  
+
+
   function Sketch6MainObject(sketch, otherParams){
       var cnvW=sketch.width;
       var cnvH=sketch.height;
     var hover=false;
     var x=cnvW/2,y=cnvH/2,r=cnvH*0.3,s=cnvH*0.25
     var n=4;
-  
+
     var needCols=[sketch.color(80,150,120),
                   sketch.color(180,50,80),
                   sketch.color(120,80,150),
                   sketch.color(50,180,80),
                   sketch.color(150,120,50),]
-  
+
     this.choice=-1;
     var choiceNum=-1;
     var choices=[];
-  
-      this.setup=function(choice) {
+
+    this.setup=function(choice) {
       this.choice=choice;
       choiceNum=parseInt(this.choice,10);
       var aStep=sketch.TWO_PI/n;
@@ -213,7 +235,7 @@ function Sketch6(sketch, param, divName){
           // sketch.pixelDensity(1);
       //other setup code
       };
-  
+
       this.draw=function(need) {
       // hover=sketch.dist(sketch.mouseX, sketch.mouseY,cnvW/2, cnvH/2)<cnvH*0.25;
       var needNum=parseInt(need,10);
@@ -245,23 +267,23 @@ function Sketch6(sketch, param, divName){
       // sketch.pop();
       //draw code
       };
-  
+
     this.windowResized=function(){
       cnvW=sketch.width;
         cnvH=sketch.height;
     };
-  
-  
+
+
       this.keyPressed=function(){
           // currentPic=(currentPic+1)%pics.length;
           // pic1=pics[currentPic];
           // setPic();
       };
-  
+
       this.mouseMoved=function(){
-  
+
       };
-  
+
       this.mouseClicked=function(){
       if(true){
         var chosen=-1;
@@ -279,15 +301,15 @@ function Sketch6(sketch, param, divName){
         console.log("choice: "+this.choice);
       }
       };
-  
+
     function Choice(x,y,s,id){
       var hover=false;
       this.id=id;
-  
+
       this.click=function(){
         return hover;
       }
-  
+
       this.show=function(){
         hover=sketch.dist(sketch.mouseX, sketch.mouseY, x,y)<s/2;
         sketch.fill(hover?0:180);
@@ -303,5 +325,5 @@ function Sketch6(sketch, param, divName){
         sketch.text(sketch.nf(id,2,0),x,y);
       };
     }
-  
+
   }

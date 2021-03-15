@@ -45,7 +45,7 @@ function ProductExplorerSketch(pd,cw,ch){
   var explorer;
   var offsetRef=0;
   offsetRef=height/2;
-  explorer=new Explorer(height/2, height/2, height*0.1);
+  explorer=new Explorer(ch/2, ch/2, ch*0.1);
 
   this.run=function(){
     explorer.run();
@@ -144,7 +144,7 @@ function ProductExplorerSketch(pd,cw,ch){
       } else {
         currentA=targetA;
       }
-      hover=dist(mouseX, mouseY,transform(origin.x+currentOffset.x,offsetRef,currentScale),transform(origin.y+currentOffset.y,height/2,currentScale))<s*currentScale;
+      hover=dist(mouseX, mouseY,transform(origin.x+currentOffset.x,offsetRef,currentScale),transform(origin.y+currentOffset.y,ch/2,currentScale))<s*currentScale;
     };
 
     function wrapAtPi(a){
@@ -155,9 +155,9 @@ function ProductExplorerSketch(pd,cw,ch){
 
     this.show=function(){
       push();
-      translate(offsetRef, height/2);
+      translate(offsetRef, ch/2);
       scale(currentScale);
-      translate(-offsetRef, -height/2);
+      translate(-offsetRef, -ch/2);
 
       var hovered=false;
       fill(hover?200:140);
@@ -220,7 +220,7 @@ function ProductExplorerSketch(pd,cw,ch){
         productRevealed=revealed;
         this.currX=this.origin.x+cos(givenA+this.a)*this.l;
         this.currY=this.origin.y+sin(givenA+this.a)*this.l;
-        this.hover=dist(mouseX, mouseY, transform(this.currX, offsetRef,scl), transform(this.currY,height/2,scl))<s*scl/2;
+        this.hover=dist(mouseX, mouseY, transform(this.currX, offsetRef,scl), transform(this.currY,ch/2,scl))<s*scl/2;
         var diffA=targetA-currentA;
         if(abs(diffA)>0.001){
           currentA+=diffA/ease;
