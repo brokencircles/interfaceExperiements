@@ -25,8 +25,23 @@ function clearStorage(){
   checkAndUpdateStatus();
 }
 
+function getValues(){
+  console.log(persist.getStorage())
+}
+
+function getValuesChangeOne(){
+  console.log("pick a random key and change it");
+  var cache=persist.getStorage();
+  var keys=Object.keys(cache);
+  var choice=Math.floor(Math.random()*keys.length);
+  cache[keys[choice]]=""+((parseInt(cache[keys[choice]],10)+1)%5);
+  persist.updateStorage(cache);
+  checkAndUpdateStatus();
+}
+
+
 function changeValues(){
-  console.log("randomise");
+  console.log("change all");
   if(!persist.getStorageState()){
     persist.init();
   } else {

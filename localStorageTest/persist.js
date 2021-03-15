@@ -1,4 +1,23 @@
-function PersistStore(n){
+/*
+A Wrapper for a set of localStorage attributes
+==============================================
+We can just read write to local storage values willy nilly,
+but by wrapping them in an object/class, we can be more organised.
+It keeps us to a fixed set of object properties, changed in one place.
+In particular this gives us one method to read all values, and to
+reset them, which can be handy.
+The structure of 'cache' is the set of values we have to play with.
+Modify/extend it here and only here.
+All values are stored as string, but are initialised as a string ("0") as
+I assume we will be just using a number as a reference to a product, chapter etc.
+
+To use, declare a variable as an instance of
+Use the reset() function to set everything back to a starting state.
+
+To make changes, call getStorage(). Modify the value you want
+in the resulting Object, then pass the modified object back to updateStorage().
+*/
+function PersistStore(n){ //a class to cache values and read/write to local storage
   var cache={
     productClass: "",
     productInClass: "",
@@ -6,18 +25,13 @@ function PersistStore(n){
     chapterInStory: ""
   };
 
-  var changed=false;
+  // var changed=false;
 
-  this.didChange=function(){ //check if something changed and reset changed flag regardless
-    var res=changed;
-    changed=false;
-    return res;
-  };
-
-  // this.update=function(){
-  //   this.updateStorage();
-  //   console.log(this.vals);
-  // }
+  // this.didChange=function(){ //check if something changed and reset changed flag regardless
+  //   var res=changed;
+  //   changed=false;
+  //   return res;
+  // };
 
   this.reset=function(){
     if(localStorage.bmcStatus && localStorage.bmcStatus=="initialised"){
@@ -28,27 +42,28 @@ function PersistStore(n){
         cache[key]="";
       });
     }
+    localStorage.bmcStatus="";
     // this.vals=fillArrayWithFalse(n);
     // this.updateStorage();
   };
 
   this.updateStorage=function(newCache){
-    cache=newCache;
-    var storageKeys=Object.keys(cache);
-    storageKeys.forEach(function(key){
-      localStorage[key]=cache[key];
-    });
-    changed=true;
+    if(localStorage.bmcStatus && localStorage.bmcStatus=="initialised"){
+      cache=newCache;
+      var storageKeys=Object.keys(cache);
+      storageKeys.forEach(function(key){
+        localStorage[key]=cache[key];
+      });
+      // changed=true;
+    }
   };
 
 
   this.getStorage=function(){
+    if(!(localStorage.bmcStatus && localStorage.bmcStatus=="initialised")){
+      this.init();
+    }
     return cache;
-    // for(var i=0; i<n; i++){
-    //   var res=localStorage.getItem("fragment"+nf(i,2,0));
-    //   this.vals[i]=res=="true";
-    //   // console.log(res,vals[i]);
-    // }
   };
 
   this.retrieveStorage=function(){
@@ -77,7 +92,7 @@ function PersistStore(n){
       // this.vals=fillArrayWithFalse(n);
       // this.updateStorage();
     }
-    changed=true;
+    // changed=true;
     // console.log(cache);
   }
 
@@ -85,7 +100,7 @@ function PersistStore(n){
 
 }
 
-function fillArrayWithFalse(n) {
-  var arr = Array.apply(null, Array(n));
-  return arr.map(function (x, i) { return false});
-}
+// function fillArrayWithFalse(n) {
+//   var arr = Array.apply(null, Array(n));
+//   return arr.map(function (x, i) { return false});
+// }
