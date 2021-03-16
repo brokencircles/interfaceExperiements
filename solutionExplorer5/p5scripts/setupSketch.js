@@ -85,6 +85,7 @@ var sketchWrapper=function(sketch){
   };
 
   sketch.keyPressed=function(){
+    // console.log("_press");
     if(sketchInstance && sketchInstance.keyPressed){
       sketchInstance.keyPressed();
     }

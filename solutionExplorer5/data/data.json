@@ -1,42 +1,68 @@
-{"productData":[
+{
+  "productClassData":[
+    {
+      "classNum":0,
+      "className":"toy",
+      "classDescription":"A small toy for a yound child",
+      "actions":{
+        "reduce":["return unwanted gifts","use a toy library or rental service"],
+        "reuse":["swap toys with other parents"],
+        "recycle":["buy toys with eaily recycled materials"],
+        "regenerate":["buy toys with natural materials"]
+      }
+    },
+    {
+      "classNum":1,
+      "className":"food",
+      "classDescription":"things we eat",
+      "actions":{
+        "reduce":["buy only what you need","use a toy library or rental service"],
+        "reuse":["make stock for soup out of veg peelings"],
+        "recycle":["make a plastic brick to collect plastic wrapping"],
+        "regenerate":["use your food waste bin", "compost at home"]
+      }
+    }
+  ],
+  "productData":[
   {
     "productID": 100001,
     "productName": "rubber duck",
     "productDescription": "it's just a duck made of rubber",
     "imageFile":"duck",
     "class":"toy",
+    "classNum":0,
     "ratedAspects":{
       "material": {
         "rating": 1,
-        "features":["likes cats","purple","wakes early","loves toast"]
+        "features":["PVC is hard to recycle","Max recycling 7 times","then becomes waste"]
       },
       "manufacture": {
         "rating": 0,
-        "features":["likes cats","purple","wakes early","loves toast"]
+        "features":["17 litres of water per duck","chemical dyes cause pollution"]
       },
       "usefulLife": {
         "rating": 2.5,
-        "features":["likes cats","purple","wakes early","loves toast"]
+        "features":["lasts a long time","donate or sell on"]
       },
       "hackable": {
         "rating": 3,
-        "features":["likes cats","purple","wakes early","loves toast"]
+        "features":[]
       },
       "repairable": {
         "rating": 1,
-        "features":["likes cats","purple","wakes early","loves toast"]
+        "features":["hard to repair. Look after it"]
       },
       "disposal": {
         "rating": 0,
-        "features":["something"]
+        "features":["lasts 1000 years in landfill"]
       },
       "value": {
         "rating": 2,
-        "features":["likes cats","purple","wakes early","loves toast"]
+        "features":["low cost"]
       },
       "social": {
         "rating": 2,
-        "features":["likes cats","purple","wakes early","loves toast"]
+        "features":["questionable working conditions"]
       }
     },
     "timeline":{
@@ -79,6 +105,7 @@
     "productDescription": "it's a small rabbit, knitted in wool",
     "imageFile":"bunny",
     "class":"toy",
+    "classNum":0,
     "ratedAspects":{
       "material": {
         "rating": 4.5,
@@ -153,6 +180,7 @@
     "productDescription": "a wood cow on wheels, with wool fur",
     "imageFile":"tinkebuCow",
     "class":"toy",
+    "classNum":0,
     "ratedAspects":{
       "material": {
         "rating": 2.8,
@@ -221,5 +249,306 @@
         "text":["Wool and wood should find other uses is recycled properly","If disposed of as waste it will biodegrade"]
       }
     }
-  }
-]}
+  },{
+    "productID": 100004,
+    "productName": "cheeseburger",
+    "productDescription": "a beefburger with cheese, in a bun",
+    "imageFile":"cheeseburger",
+    "class":"food",
+    "classNum":1,
+    "ratedAspects":{
+      "material": {
+        "rating": 1.3,
+        "features":["inefficient use of land", "cows emit methane"]
+      },
+      "manufacture": {
+        "rating": 1.1,
+        "features":["high energy and water use"]
+      },
+      "usefulLife": {
+        "rating": 1.5,
+        "features":[]
+      },
+      "hackable": {
+        "rating": 2.1,
+        "features":[]
+      },
+      "repairable": {
+        "rating": 2.1,
+        "features":[]
+      },
+      "disposal": {
+        "rating": 3.4,
+        "features":["we need to eat what we buy"]
+      },
+      "value": {
+        "rating": 3.5,
+        "features":["low cost to us", "expensive for the planet"]
+      },
+      "social": {
+        "rating": 4.1,
+        "features":["poor conditions in ..??"]
+      }
+    },
+    "timeline":{
+      "material":{
+        "image":"noimage",
+        "text":["Beef production uses a lot of land in grazing","Animal feed competes with crops for human consumption"]
+      },
+      "manufacture":{
+        "image":"noimage",
+        "text":["Cheese", "bread"]
+      },
+      "distribution":{
+        "image":"noimage",
+        "text":["Meat is rarely consumed locally"]
+      },
+      "useful life":{
+        "image":"noimage",
+        "text":[""]
+      },
+      "hackability":{
+        "image":"noimage",
+        "text":[]
+      },
+      "repairability":{
+        "image":"noimage",
+        "text":[]
+      },
+      "reuse":{
+        "image":"noimage",
+        "text":[]
+      },
+      "disposal":{
+        "image":"noimage",
+        "text":["Minimise food waste","All food waste should be composted"]
+        }
+      }
+    },{
+      "productID": 100005,
+      "productName": "canvas shoe",
+      "productDescription": "a casual shoe, canvas with a rubber sole",
+      "imageFile":"canvasShoes",
+      "class":"shoe",
+      "classNum":2,
+      "ratedAspects":{
+        "material": {
+          "rating": 1,
+          "features":["PVC is hard to recycle","Max recycling 7 times","then becomes waste"]
+        },
+        "manufacture": {
+          "rating": 0,
+          "features":["17 litres of water per duck","chemical dyes cause pollution"]
+        },
+        "usefulLife": {
+          "rating": 2.5,
+          "features":["lasts a long time","donate or sell on"]
+        },
+        "hackable": {
+          "rating": 3,
+          "features":[]
+        },
+        "repairable": {
+          "rating": 1,
+          "features":["hard to repair. Look after it"]
+        },
+        "disposal": {
+          "rating": 0,
+          "features":["lasts 1000 years in landfill"]
+        },
+        "value": {
+          "rating": 2,
+          "features":["low cost"]
+        },
+        "social": {
+          "rating": 2,
+          "features":["questionable working conditions"]
+        }
+      },
+      "timeline":{
+        "material":{
+          "image":"noimage",
+          "text":["PVC can be recycled a maximum of seven times","Chemical recycling uses other virgin chemicals"]
+        },
+        "manufacture":{
+          "image":"noimage",
+          "text":["17 litres of water are used for each duck", "Chemical dyes can cause damanging pollution"]
+        },
+        "distribution":{
+          "image":"noimage",
+          "text":["Typically made in Far East Asia and shipped globally","Distribution paths are rarely optimal"]
+        },
+        "useful life":{
+          "image":"noimage",
+          "text":["A rubber or plastic duck will last a long time","It can bring joy to many owners, if well looked after"]
+        },
+        "hackability":{
+          "image":"noimage",
+          "text":["There are no easy alternative uses for the duck or its components"]
+        },
+        "repairability":{
+          "image":"noimage",
+          "text":["A plastic dusck cannot be reapired simply or economically"]
+        },
+        "reuse":{
+          "image":"noimage",
+          "text":["The best option for an unwanted duck is a donation to a second user market"]
+        },
+        "disposal":{
+          "image":"noimage",
+          "text":["The duck should be disposed of in plastic recycling","Sadly, it most probably will not be remanufactured and will becoem a problem waste plastic"]
+        }
+      }
+    },{
+      "productID": 100006,
+      "productName": "typical trainers",
+      "productDescription": "standard, muliple man-made material trainers",
+      "imageFile":"trainers",
+      "class":"shoe",
+      "classNum":2,
+      "ratedAspects":{
+        "material": {
+          "rating": 4.5,
+          "features":["likes cats","purple","wakes early","loves toast"]
+        },
+        "manufacture": {
+          "rating": 1.5,
+          "features":["likes cats","purple","wakes early","loves toast"]
+        },
+        "usefulLife": {
+          "rating": 2,
+          "features":["likes cats","purple","wakes early","loves toast"]
+        },
+        "hackable": {
+          "rating": 1.2,
+          "features":["likes cats","purple","wakes early","loves toast"]
+        },
+        "repairable": {
+          "rating": 3,
+          "features":["likes cats","purple","wakes early","loves toast"]
+        },
+        "disposal": {
+          "rating": 4.2,
+          "features":[]
+        },
+        "value": {
+          "rating": 3,
+          "features":["likes cats","purple","wakes early","loves toast"]
+        },
+        "social": {
+          "rating": 2,
+          "features":["likes cats","purple","wakes early","loves toast"]
+        }
+      },
+      "timeline":{
+        "material":{
+          "image":"noimage",
+          "text":["Wool is naturally sustainable","It can be reused as yarn, or used in insulation and other products"]
+        },
+        "manufacture":{
+          "image":"noimage",
+          "text":["Making dyed yarn can use a lot of water", "hand knitting makes each product unique"]
+        },
+        "distribution":{
+          "image":"noimage",
+          "text":["Mostly made for a local, domestic market","The open source patterns can be used by anyone anywhere"]
+        },
+        "useful life":{
+          "image":"noimage",
+          "text":["Wool is hard wearing but can be difficult to wash without loss of shape","If occasionally cleaned carefullyit can last a long time"]
+        },
+        "hackability":{
+          "image":"noimage",
+          "text":["The yarn can be put to other uses"]
+        },
+        "repairability":{
+          "image":"noimage",
+          "text":["Small holes can be darned with similar (or different) yarn"]
+        },
+        "reuse":{
+          "image":"noimage",
+          "text":["The toy can be passed to others or donated"]
+        },
+        "disposal":{
+          "image":"noimage",
+          "text":["Wool should find other uses","If disposed of as waste it will biodegrade"]
+        }
+      }
+    },{
+      "productID": 100007,
+      "productName": "recylable trainer",
+      "productDescription": "a single-material trainer, that can be remanufactured",
+      "imageFile":"recycleShoe",
+      "class":"shoe",
+      "classNum":2,
+      "ratedAspects":{
+        "material": {
+          "rating": 2.8,
+          "features":["likes cats","purple","wakes early","loves toast"]
+        },
+        "manufacture": {
+          "rating": 1.7,
+          "features":["likes cats","purple","wakes early","loves toast"]
+        },
+        "usefulLife": {
+          "rating": 1.5,
+          "features":["likes cats","purple","wakes early","loves toast"]
+        },
+        "hackable": {
+          "rating": 2.1,
+          "features":["likes cats","purple","wakes early","loves toast"]
+        },
+        "repairable": {
+          "rating": 2.1,
+          "features":["likes cats","purple","wakes early","loves toast"]
+        },
+        "disposal": {
+          "rating": 3.4,
+          "features":[]
+        },
+        "value": {
+          "rating": 3.5,
+          "features":["likes cats","purple","wakes early","loves toast"]
+        },
+        "social": {
+          "rating": 4.1,
+          "features":["likes cats","purple","wakes early","loves toast"]
+        }
+      },
+      "timeline":{
+        "material":{
+          "image":"noimage",
+          "text":["The wood is sustainable","Tree planting is supported with each purchase"]
+        },
+        "manufacture":{
+          "image":"noimage",
+          "text":["Hand made in small batches", "all waste is used in the neighboruing farm"]
+        },
+        "distribution":{
+          "image":"noimage",
+          "text":["Mostly made for a local, domestic market","Never shipped by air freight"]
+        },
+        "useful life":{
+          "image":"noimage",
+          "text":["The design is very robust","It can bring joy to many owners"]
+        },
+        "hackability":{
+          "image":"noimage",
+          "text":["not easily hackable for other uses"]
+        },
+        "repairability":{
+          "image":"noimage",
+          "text":["Wheels and fur outer can be replaced", "The wood can survive rough handling"]
+        },
+        "reuse":{
+          "image":"noimage",
+          "text":["The toy can be passed to others or donated"]
+        },
+        "disposal":{
+          "image":"noimage",
+          "text":["Wool and wood should find other uses is recycled properly","If disposed of as waste it will biodegrade"]
+        }
+      }
+    }
+  ]
+}

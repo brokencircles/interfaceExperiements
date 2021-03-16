@@ -173,7 +173,7 @@ function SketchProduct(sketch, param, divName){
     }
 
     this.keyPressed=function(){
-      // sketch1MainObject.keyPressed();
+      // sketch6MainObject.keyPressed();
     }
 
     // function sketchPreload(){
@@ -219,12 +219,15 @@ function SketchProduct(sketch, param, divName){
     var pes;
 
     this.choice=-1;
-    var choiceNum=-1;
+    var choiceNum=0;
+    var numChoices=3;
 
-    this.setup=function(choice) {
+    this.setup=function() {
       // this.choice=choice;
       // choiceNum=parseInt(this.choice,10);
       pes=new ProductExplorerSketch(sketch, pd, cnvW, cnvH);
+      // console.log(pd);
+      pes.assignData(pd.data.productData,choiceNum);
     };
 
     this.draw=function(need) {
@@ -242,9 +245,7 @@ function SketchProduct(sketch, param, divName){
 
 
     this.keyPressed=function(){
-          // currentPic=(currentPic+1)%pics.length;
-          // pic1=pics[currentPic];
-          // setPic();
+
     };
 
     this.mouseMoved=function(){
@@ -252,7 +253,10 @@ function SketchProduct(sketch, param, divName){
     };
 
     this.mouseClicked=function(){
-      if(true){
+      if(sketch.mouseY>sketch.height){
+        choiceNum=(choiceNum+1)%numChoices;
+        pes.assignData(pd.data.productData,choiceNum);
+      } else {
         pes.click();
       }
     };
@@ -268,6 +272,10 @@ function ProductExplorerSketch(sketch, pd,cw,ch){
   var offsetRef=0;
   offsetRef=ch/2;
   explorer=new Explorer(ch/2, ch/2, ch*0.1);
+
+  this.assignData=function(productData, classNum){
+    explorer.assignData(productData,classNum);
+  }
 
   this.run=function(){
     explorer.run();
@@ -318,6 +326,23 @@ function ProductExplorerSketch(sketch, pd,cw,ch){
       var p=new ExploreProduct(i,p5.Vector.add(origin,currentOffset), i*aStep,s*2,s*1,8);
       p.assignProduct(pd.data.productData[i],"images/"+pd.data.productData[i].imageFile+".png");
       productOptions.push(p);
+    }
+
+    this.assignData=function(productData, classNum){
+      var numProductsThisClass=productData.reduce(function(count,prod){
+        return count+(prod.classNum==classNum?1:0);
+      },0);
+      aStep=sketch.TWO_PI/numProductsThisClass;
+      productOptions=[];
+      matchingProductCount=0;
+      productData.forEach(function(prod){
+        if(prod.classNum==classNum){
+          var p=new ExploreProduct(matchingProductCount,p5.Vector.add(origin,currentOffset), matchingProductCount*aStep,s*2,s*1,8);
+          p.assignProduct(prod,"images/"+prod.imageFile+".png");
+          productOptions.push(p);
+          matchingProductCount++;
+        }
+      });
     }
 
     this.click=function(){
@@ -542,7 +567,7 @@ function ProductExplorerSketch(sketch, pd,cw,ch){
           sketch.textFont(displayFont);
           sketch.textSize(s0/6);
           sketch.textAlign(sketch.CENTER,sketch.CENTER);
-          sketch.text(productData.productName,x1,y1-s0/2);
+          sketch.text(productData.productName,x1,y1-s0/6);
         }
         sketch.colorMode(sketch.RGB);
 
